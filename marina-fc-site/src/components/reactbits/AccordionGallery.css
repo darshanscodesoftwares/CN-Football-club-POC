@@ -1,0 +1,124 @@
+/* Plain-CSS equivalents of the Tailwind classes in the React Bits AccordionGallery-TS-TW source. */
+
+/* flex flex-row w-full max-w-full [perspective:1400px] */
+.ag-root {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  max-width: 100%;
+  perspective: 1400px;
+}
+
+/* flex-col */
+.ag-root--vertical {
+  flex-direction: column;
+}
+
+/* relative block min-w-0 min-h-0 flex-[1_1_0] cursor-pointer overflow-hidden bg-[#0a0713] no-underline
+   outline-none [transform-style:preserve-3d] [transform-origin:center] [box-shadow:0_10px_30px_-18px_rgba(0,0,0,0.8)] */
+.ag-panel {
+  position: relative;
+  display: block;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  outline: none;
+  background: #0a0713;
+  box-shadow: 0 10px 30px -18px rgb(0 0 0 / 0.8);
+  text-decoration: none;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transform-origin: center;
+}
+
+/* focus-visible:[box-shadow:0_0_0_2px_var(--ag-accent),0_10px_30px_-18px_rgba(0,0,0,0.8)] */
+.ag-panel:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--ag-accent),
+    0 10px 30px -18px rgb(0 0 0 / 0.8);
+}
+
+/* absolute inset-0 overflow-hidden [border-radius:inherit] */
+.ag-clip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+/* absolute top-1/2 left-1/2 [filter:grayscale(var(--ag-gray,1))] */
+.ag-media {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  filter: grayscale(var(--ag-gray, 1));
+}
+
+/* block h-full w-full select-none object-cover [-webkit-user-drag:none] */
+.ag-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* pointer-events-none absolute inset-0 */
+.ag-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* pointer-events-none absolute bottom-5 left-5 right-5 z-[2] flex items-center gap-3 */
+.ag-label {
+  position: absolute;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  left: 1.25rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  pointer-events: none;
+}
+
+/* h-[26px] w-[3px] flex-none rounded-[3px] opacity-0 */
+.ag-bar {
+  flex: none;
+  width: 3px;
+  height: 26px;
+  border-radius: 3px;
+  opacity: 0;
+}
+
+/* overflow-hidden text-ellipsis whitespace-nowrap text-[clamp(1rem,1.4vw,1.4rem)] font-semibold
+   tracking-[0.01em] opacity-0 [text-shadow:0_2px_14px_rgba(0,0,0,0.55)] */
+.ag-text {
+  overflow: hidden;
+  font-size: clamp(1rem, 1.4vw, 1.4rem);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-overflow: ellipsis;
+  text-shadow: 0 2px 14px rgb(0 0 0 / 0.55);
+  white-space: nowrap;
+  opacity: 0;
+}
+
+/* max-[520px]: !flex-col, [perspective:none]; panels min-h-[84px] !transform-none.
+   Tailwind's max-[520px] means width < 520px, so 520px itself is excluded. */
+@media (max-width: 519.98px) {
+  .ag-root {
+    flex-direction: column !important;
+    perspective: none;
+  }
+
+  .ag-panel {
+    min-height: 84px;
+    transform: none !important;
+  }
+}

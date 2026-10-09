@@ -1,0 +1,43 @@
+{
+  "name": "marina-fc-site",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:lan": "vite --host",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint",
+    "preview": "vite preview",
+    "frames:gemini": "node scripts/build-hero-frames.mjs --input \"../Reference(can_refer_for_design)/gemini_HD.mp4\" --id gemini --mirror --focus 0.44 --fps 30 --quality 78",
+    "frames:vis": "node scripts/build-hero-frames.mjs --input \"../Reference(can_refer_for_design)/google-vis_HD_V2.mp4\" --id google-vis --focus 0.5 --fps 30 --quality 78",
+    "frames:gemini-new": "node scripts/build-hero-frames.mjs --input \"../Reference(can_refer_for_design)/gemini_HD-new.mp4\" --id gemini-new --mirror --focus 0.46 --fps 30 --quality 78",
+    "frames:hero": "npm run frames:gemini && npm run frames:vis && npm run frames:gemini-new",
+    "matte:about": "node scripts/build-blend-mask.mjs --input public/media/about/beach-sunset.png --output public/media/about/beach-sunset-matte.png --seed top,left,bottom,right",
+    "matte:footer": "node scripts/build-blend-mask.mjs --input public/media/footer/ground.png --output public/media/footer/ground-sky.png --seed top --min 248 --neutral 10"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter-tight": "^5.3.0",
+    "@fontsource-variable/plus-jakarta-sans": "^5.3.0",
+    "@fontsource-variable/roboto-flex": "^5.3.0",
+    "@fontsource-variable/sora": "^5.3.0",
+    "animejs": "^4.5.0",
+    "gsap": "^3.15.0",
+    "lenis": "^1.3.26",
+    "motion": "^13.4.4",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "@types/three": "^0.186.0",
+    "@vitejs/plugin-react": "6.1.1",
+    "ffmpeg-static": "^5.3.0",
+    "oxlint": "1.85.0",
+    "typescript": "~6.0.2",
+    "vite": "8.3.3"
+  }
+}

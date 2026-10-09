@@ -1,0 +1,110 @@
+/* Metric-matched Arial fallbacks (Capsize numbers) keep layout steady while the web fonts swap in. */
+@font-face {
+  font-family: 'Inter Tight Fallback';
+  src: local('Arial'), local('ArialMT');
+  ascent-override: 100.5078%;
+  descent-override: 25.0256%;
+  line-gap-override: 0%;
+  size-adjust: 96.3855%;
+}
+
+@font-face {
+  font-family: 'Sora Fallback';
+  src: local('Arial'), local('ArialMT');
+  ascent-override: 85.2913%;
+  descent-override: 25.4995%;
+  line-gap-override: 0%;
+  size-adjust: 113.7279%;
+}
+
+:root {
+  /* Reference navy (#0B1F3A) and its 90% tint for running copy over video. */
+  --ink: #0b1f3a;
+  --ink-soft: rgb(11 31 58 / 0.9);
+  --paper: #faf7f2; /* reference section background */
+  --brand-blue: #1f4fbf;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Inter Tight carries headlines and reading text; Sora's wide caps carry the brand voice. */
+  --font-display: 'Inter Tight Variable', 'Inter Tight', 'Inter Tight Fallback', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-text: var(--font-display);
+  --font-brand: 'Sora Variable', 'Sora', 'Sora Fallback', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  /* Shared header geometry: screen-edge inset, header row offset, menu button size. */
+  /* Reference: 48 px side inset, 32 px top inset and a 48 px menu on a 1700 px viewport. */
+  --edge: clamp(16px, 2.82vw, 64px);
+  --header-top: clamp(14px, 1.88vw, 40px);
+  --menu-size: clamp(36px, 2.82vw, 56px);
+
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* The native scrollbar is hidden; components/ScrollIndicator draws a short overlay pill instead. */
+html {
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+html {
+  font-synthesis: none;
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: clip;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img,
+svg,
+canvas,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brand-blue);
+  outline-offset: 3px;
+}

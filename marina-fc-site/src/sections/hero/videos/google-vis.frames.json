@@ -1,0 +1,32 @@
+{
+  "id": "google-vis",
+  "source": "google-vis_HD_V2.mp4",
+  "version": "8b1b84476c",
+  "mirrored": false,
+  "focus": 0.5,
+  "fps": 30,
+  "frameCount": 302,
+  "duration": 10.067,
+  "cuts": [
+    2,
+    3.967,
+    6.433
+  ],
+  "poster": "/media/hero/google-vis/poster.webp",
+  "sets": {
+    "desktop": {
+      "path": "/media/hero/google-vis/desktop",
+      "width": 1920,
+      "height": 1080,
+      "count": 302,
+      "bytes": 52696810
+    },
+    "mobile": {
+      "path": "/media/hero/google-vis/mobile",
+      "width": 810,
+      "height": 1080,
+      "count": 302,
+      "bytes": 27370330
+    }
+  }
+}

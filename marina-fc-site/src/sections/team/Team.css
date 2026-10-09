@@ -1,0 +1,418 @@
+/*
+ * "Our coaches". The picture shares the gallery's container width. Colours are the site's own:
+ * paper, ink and the site gold. The portrait and cutouts are shown as supplied; the blur, veil
+ * and bottom fade are overlays and display effects only.
+ */
+.team {
+  --team-w: min(100%, 81.8vw, 1680px);
+  --team-gold: #c8a96b;
+  --team-rule: rgb(11 31 58 / 0.12);
+  --card-w: clamp(300px, 28vw, 440px);
+
+  padding: clamp(32px, 4vw, 80px) var(--edge) clamp(56px, 6vw, 120px);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.team[data-reveal='pending'] :is(.team__eyebrow, .team__title, .team__hint, .team__frame) {
+  opacity: 0;
+}
+
+/* -------------------------------------------------------------- heading */
+
+.team__head {
+  display: grid;
+  justify-items: center;
+  gap: clamp(10px, 1vw, 16px);
+  text-align: center;
+}
+
+.team__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 0.9vw, 16px);
+  font-family: var(--font-brand);
+  font-size: clamp(10px, 0.78vw, 13px);
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.team__eyebrow-line {
+  width: clamp(24px, 2.3vw, 40px);
+  height: 2px;
+  border-radius: 2px;
+  background: var(--team-gold);
+}
+
+.team__title {
+  font-family: var(--font-brand);
+  font-size: clamp(1.6rem, 3vw, 3.6rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.team__hint {
+  font-family: var(--font-display);
+  font-size: clamp(0.85rem, 0.9vw, 1rem);
+  color: rgb(11 31 58 / 0.6);
+}
+
+.team__hint--hover {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .team__hint--hover {
+    display: inline;
+  }
+
+  .team__hint--tap {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------- stage */
+
+.team__stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: var(--team-w);
+  margin: clamp(24px, 3vw, 56px) auto 0;
+}
+
+.team__frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--team-ratio);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.team__portrait {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* The blurred twin: rasterised once, then only its opacity changes (cheap to animate). */
+.team__portrait--soft {
+  filter: blur(14px);
+  opacity: 0;
+  transform: scale(1.04); /* hides the blur's soft rim at the frame edges */
+  transition: opacity 0.6s var(--ease-out);
+}
+
+/* Page colour over the portrait's plain white background only (people are cut out of the mask). */
+.team__matte {
+  position: absolute;
+  inset: 0;
+  background: var(--paper);
+  mix-blend-mode: darken;
+  -webkit-mask: var(--matte) center / 100% 100% no-repeat;
+  mask: var(--matte) center / 100% 100% no-repeat;
+  pointer-events: none;
+}
+
+.team__veil {
+  position: absolute;
+  inset: 0;
+  background: var(--paper);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s var(--ease-out);
+}
+
+/* Each cutout sits exactly over its person (position, size and the slight tilt from the alignment). */
+.team__cutout {
+  position: absolute;
+  transform-origin: 0 0;
+  pointer-events: none;
+}
+
+.team__cutout img {
+  display: block;
+  width: 100%;
+  height: auto;
+  opacity: 0;
+  transform-origin: 50% 88%;
+  /* Legs fade out, so the cutout's own cut edge never shows. */
+  -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 16%);
+  mask-image: linear-gradient(to top, transparent 0%, #000 16%);
+  transition:
+    opacity 0.35s ease,
+    transform 0.7s var(--ease-out),
+    filter 0.7s var(--ease-out);
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.team__cutout.is-on img {
+  opacity: 1;
+  transform: translateY(-1.6%) scale(1.065);
+  filter: drop-shadow(0 26px 30px rgb(11 31 58 / 0.3));
+}
+
+.team__stage[data-active] .team__portrait--soft {
+  opacity: 1;
+}
+
+.team__stage[data-active] .team__veil {
+  opacity: 0.45;
+}
+
+/* The portrait's bottom edge eases into the page. */
+.team__fade {
+  position: absolute;
+  inset: auto 0 0;
+  height: 16%;
+  background: linear-gradient(to bottom, rgb(250 247 242 / 0), var(--paper));
+  pointer-events: none;
+}
+
+/* Hover/tap areas shaped like each person (from the aligned silhouettes). */
+.team__hit {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* The lifted person and their card are the focus indicator. */
+.team__hit:focus-visible {
+  outline: none;
+}
+
+/* ------------------------------------------------------------------ card */
+
+.team__card {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  width: var(--card-w);
+  padding: clamp(20px, 1.9vw, 32px);
+  border: 1px solid rgb(11 31 58 / 0.08);
+  border-radius: 18px;
+  background: rgb(250 247 242 / 0.86);
+  -webkit-backdrop-filter: blur(14px) saturate(1.1);
+  backdrop-filter: blur(14px) saturate(1.1);
+  box-shadow: 0 30px 60px -28px rgb(11 31 58 / 0.35);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.4s ease,
+    transform 0.6s var(--ease-out),
+    visibility 0s linear 0.4s;
+}
+
+.team__card--right {
+  left: min(var(--card-left), 100% - var(--card-w));
+  transform: translate(-14px, -50%);
+}
+
+.team__card--left {
+  right: min(var(--card-right), 100% - var(--card-w));
+  transform: translate(14px, -50%);
+}
+
+.team__card.is-on {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate(0, -50%);
+  transition:
+    opacity 0.45s ease 0.08s,
+    transform 0.7s var(--ease-out) 0.08s,
+    visibility 0s;
+}
+
+.team__badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-brand);
+  font-size: clamp(9.5px, 0.66vw, 11.5px);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.team__badge-line {
+  flex: none;
+  width: 22px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--team-gold);
+}
+
+.team__name {
+  margin-top: clamp(10px, 0.9vw, 14px);
+  font-family: var(--font-brand);
+  font-size: clamp(1.45rem, 1.85vw, 2.3rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.team__role {
+  margin-top: 6px;
+  padding-bottom: clamp(12px, 1.1vw, 18px);
+  border-bottom: 1px solid var(--team-rule);
+  font-family: var(--font-display);
+  font-size: clamp(0.85rem, 0.82vw, 1rem);
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.team__label {
+  margin-top: clamp(12px, 1.1vw, 18px);
+  font-family: var(--font-brand);
+  font-size: clamp(9px, 0.62vw, 11px);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgb(11 31 58 / 0.55);
+}
+
+.team__quals {
+  display: grid;
+  gap: 7px;
+  padding: 0;
+  margin: 10px 0 0;
+  list-style: none;
+}
+
+.team__quals li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: clamp(0.84rem, 0.8vw, 0.98rem);
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.team__quals svg {
+  flex: none;
+  width: 17px;
+  height: 17px;
+  color: var(--team-gold);
+}
+
+.team__bio {
+  margin-top: clamp(12px, 1.1vw, 18px);
+  font-family: var(--font-display);
+  font-size: clamp(0.84rem, 0.8vw, 0.98rem);
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.team__spec {
+  margin-top: 6px;
+  font-family: var(--font-display);
+  font-size: clamp(0.86rem, 0.82vw, 1rem);
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+/* Name chips: the way in on smaller screens (hidden on wide screens, where you hover the picture). */
+.team__chips {
+  display: none;
+}
+
+.team__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ------------------------------------- smaller screens: card below the picture */
+
+@media (max-width: 1099px) {
+  .team {
+    --team-w: 100%;
+  }
+
+  .team__chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    order: 1;
+    margin-top: 16px;
+  }
+
+  .team__chip {
+    padding: 9px 16px;
+    border: 1px solid var(--team-rule);
+    border-radius: 999px;
+    background: transparent;
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ink);
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease,
+      border-color 0.3s ease;
+  }
+
+  .team__chip[aria-pressed='true'] {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: #ffffff;
+  }
+
+  .team__card,
+  .team__card--right,
+  .team__card--left {
+    position: static;
+    order: 2;
+    display: none;
+    width: auto;
+    max-width: 40rem;
+    margin: 16px auto 0;
+    transform: none;
+  }
+
+  .team__card.is-on {
+    display: block;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .team__cutout.is-on img {
+    transform: none;
+  }
+
+  .team__cutout img,
+  .team__card,
+  .team__portrait--soft,
+  .team__veil {
+    transition-duration: 0.01s;
+  }
+}

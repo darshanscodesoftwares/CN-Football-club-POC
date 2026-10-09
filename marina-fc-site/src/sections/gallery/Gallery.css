@@ -1,0 +1,328 @@
+/*
+ * "Life at Marina FC" collage. Sizes are measured from the reference screenshot (1366 px wide)
+ * and expressed in vw, so the layout keeps the screenshot's proportions at any desktop width:
+ * a 68 px thumbnail rail, a 1018 x 478 px viewer, 10 px corners, an 8 px gap between paired photos.
+ */
+.gallery {
+  --rail-gap: clamp(16px, 2.27vw, 40px);
+  --thumb-gap: clamp(6px, 0.8vw, 14px);
+  --viewer-h: clamp(300px, 35vw, 720px);
+  /* Exactly eight whole thumbnails fill the viewer height, as on the reference (68 x 50). */
+  --thumbs-visible: 8;
+  --thumb-h: calc((var(--viewer-h) - (var(--thumbs-visible) - 1) * var(--thumb-gap)) / var(--thumbs-visible));
+  --rail-w: calc(var(--thumb-h) * 1.36);
+  --frame-radius: clamp(8px, 0.73vw, 14px);
+  --pair-gap: clamp(6px, 0.6vw, 12px);
+  --chrome-inset: clamp(12px, 1.3vw, 24px);
+
+  padding: clamp(24px, 2.5vw, 48px) var(--edge) clamp(64px, 7vw, 140px);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.gallery[data-reveal='pending'] .gallery__title,
+.gallery[data-reveal='pending'] .gallery__viewer,
+.gallery[data-reveal='pending'] .gallery__thumb {
+  opacity: 0;
+}
+
+.gallery__title {
+  font-family: var(--font-brand);
+  font-size: clamp(1.75rem, 3.2vw, 3.8rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.gallery__body {
+  display: flex;
+  gap: var(--rail-gap);
+  width: min(100%, 81.8vw, 1680px);
+  margin: clamp(28px, 4.1vw, 76px) auto 0;
+}
+
+/* ------------------------------------------------------------- thumbnails */
+
+.gallery__rail {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--thumb-gap);
+  width: calc(var(--rail-w) + 6px);
+  height: calc(var(--viewer-h) + 6px); /* 3 px of room each side for the active ring */
+  padding: 3px;
+  margin: -3px;
+  overflow: hidden; /* scrolled programmatically, one whole thumbnail at a time */
+  scrollbar-width: none;
+}
+
+.gallery__rail::-webkit-scrollbar {
+  display: none;
+}
+
+.gallery__thumb {
+  flex: none;
+  height: var(--thumb-h);
+  overflow: hidden;
+  border-radius: clamp(5px, 0.44vw, 9px);
+  opacity: 0.55;
+  transition:
+    opacity 0.4s ease,
+    box-shadow 0.4s var(--ease-out),
+    transform 0.5s var(--ease-out);
+}
+
+.gallery__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease-out);
+}
+
+.gallery__thumb:hover {
+  opacity: 0.85;
+}
+
+.gallery__thumb:hover img {
+  transform: scale(1.06);
+}
+
+.gallery__thumb.is-active {
+  opacity: 1;
+  box-shadow: 0 0 0 2px var(--ink);
+}
+
+.gallery__thumb:focus-visible {
+  outline-offset: 2px;
+}
+
+/* ----------------------------------------------------------------- viewer */
+
+.gallery__viewer {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: var(--viewer-h);
+  touch-action: pan-y; /* vertical swipes still scroll the page */
+  user-select: none;
+}
+
+.gallery__slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  gap: var(--pair-gap);
+  margin: 0;
+  visibility: hidden;
+  transform-origin: 50% 50%;
+}
+
+.gallery__slide.is-leaving {
+  z-index: 1;
+  visibility: visible;
+}
+
+.gallery__slide.is-active {
+  z-index: 2;
+  visibility: visible;
+}
+
+/* The accordion fills the viewer; its own height prop is a fixed px value, so it is overridden here. */
+.gallery__accordion {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+}
+
+.gallery__accordion .ag-root {
+  height: 100% !important;
+}
+
+.gallery__accordion .ag-text {
+  font-family: var(--font-brand);
+}
+
+
+/* Same corner radius as the single-photo frames (the component takes a fixed px value). */
+.gallery__accordion .ag-panel {
+  border-radius: var(--frame-radius) !important;
+}
+
+/* The last panel's label sits where the Prev/Next buttons are; keep it clear of them. */
+.gallery__accordion .ag-panel:last-child .ag-label {
+  right: calc(var(--chrome-inset) + 2 * clamp(32px, 2.34vw, 46px) + clamp(6px, 0.6vw, 12px) + 8px);
+}
+
+/* Phones (the component stacks its panels below 520 px, matching Tailwind's max-[520px]):
+   size each photo to its full-width strip instead of the row-based width the component uses,
+   with 24 px spare for the parallax drift, and let the strips share the height freely. */
+@media (max-width: 519.98px) {
+  .gallery__accordion .ag-media {
+    width: calc(100% + 24px) !important;
+  }
+
+  .gallery__accordion .ag-panel {
+    min-height: 0;
+  }
+}
+
+.gallery__frame {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: var(--frame-radius);
+  background: #0e141c;
+}
+
+.gallery__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform-origin: 50% 50%;
+}
+
+/* Soft vignette plus a floor gradient so captions read on any photo. */
+.gallery__frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(to top, rgb(0 0 0 / 0.58), rgb(0 0 0 / 0) 42%);
+  box-shadow: inset 0 0 clamp(30px, 4vw, 80px) rgb(0 0 0 / 0.32);
+  pointer-events: none;
+}
+
+.gallery__caption {
+  position: absolute;
+  bottom: clamp(16px, 2.2vw, 40px);
+  left: clamp(14px, 1.46vw, 28px);
+  z-index: 1;
+  display: grid;
+  gap: clamp(4px, 0.45vw, 8px);
+  color: #ffffff;
+}
+
+.gallery__eyebrow {
+  font-family: var(--font-brand);
+  font-size: clamp(9px, 0.62vw, 12px);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.gallery__place {
+  font-family: var(--font-brand);
+  font-size: clamp(14px, 1.1vw, 21px);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+
+/* "3 / 10" pill, top-right of the viewer. */
+.gallery__counter {
+  position: absolute;
+  top: var(--chrome-inset);
+  right: var(--chrome-inset);
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  height: clamp(22px, 1.76vw, 34px);
+  padding: 0 clamp(9px, 0.88vw, 16px);
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.42);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  color: #ffffff;
+  font-family: var(--font-brand);
+  font-size: clamp(9px, 0.66vw, 12px);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+.gallery__counter-num {
+  display: inline-block;
+}
+
+.gallery__counter-sep {
+  opacity: 0.7;
+}
+
+/* Previous / next, bottom-right of the viewer. */
+.gallery__nav {
+  position: absolute;
+  right: var(--chrome-inset);
+  bottom: var(--chrome-inset);
+  z-index: 3;
+  display: flex;
+  gap: clamp(6px, 0.6vw, 12px);
+}
+
+.gallery__nav-btn {
+  display: grid;
+  place-items: center;
+  width: clamp(32px, 2.34vw, 46px);
+  height: clamp(32px, 2.34vw, 46px);
+  border-radius: 50%;
+  background: #ffffff;
+  color: var(--ink);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.18);
+  transition:
+    transform 0.3s ease,
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.gallery__nav-btn svg {
+  width: 45%;
+  height: 45%;
+}
+
+.gallery__nav-btn:hover,
+.gallery__nav-btn:focus-visible {
+  transform: scale(1.06);
+  background: var(--ink);
+  color: #ffffff;
+}
+
+.gallery__nav-btn:active {
+  transform: scale(0.94);
+}
+
+/* ------------------------------------------------- phones: viewer on top */
+
+@media (max-width: 767px) {
+  .gallery {
+    --viewer-h: 74vw;
+  }
+
+  .gallery__body {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .gallery__viewer {
+    order: 1;
+    flex: none;
+  }
+
+  .gallery__rail {
+    order: 2;
+    flex-direction: row;
+    width: auto;
+    height: auto;
+    overflow-x: auto; /* thumbs swipe sideways */
+  }
+
+  .gallery__thumb {
+    width: 64px;
+    height: 47px;
+  }
+}

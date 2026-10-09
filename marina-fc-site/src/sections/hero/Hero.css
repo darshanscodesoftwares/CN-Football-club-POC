@@ -1,0 +1,622 @@
+/*
+ * Hero sizes come from the measured neidhalfc.com CSS. The client's screenshots show that site at
+ * 80% zoom on a 1700 px CSS viewport, so each value below is the reference px / 1700 expressed in vw.
+ * The layout therefore keeps the screenshot's proportions at any desktop width.
+ */
+.hero {
+  --vis-bottom: calc(100lvh - 100svh); /* toolbar overlap on mobile; 0 on desktop */
+  --crest-h: clamp(30px, 2.7vw, 56px);
+  --brand-size: clamp(13px, 1.3vw, 24px);
+  --brand-gap: clamp(10px, 1.15vw, 20px);
+  --column-left: 67.53%; /* 1148 / 1700 */
+  --title-size: clamp(2rem, 3.39vw, 4.75rem); /* 56px at 1700, +3% for Inter Tight's smaller caps */
+  --lede-size: clamp(0.875rem, 1.12vw, 1.25rem); /* 19 / 1700 */
+  --gap-title: clamp(14px, 1.41vw, 28px); /* 24 / 1700 */
+  --gap-lede: clamp(16px, 1.65vw, 32px); /* 28 / 1700 */
+  --pill-h: clamp(34px, 2.59vw, 52px); /* 44 / 1700 */
+  --pill-pad: clamp(18px, 1.88vw, 36px); /* 32 / 1700 */
+  --pill-font: clamp(10px, 0.74vw, 13px);
+  --round-size: var(--pill-h);
+  --actions-gap: clamp(14px, 1.41vw, 28px); /* 24 / 1700 */
+  --skip-inset: clamp(16px, 1.88vw, 36px); /* 32 / 1700 */
+  --skip-h: clamp(28px, 2.24vw, 42px); /* 38 / 1700 */
+  --skip-font: clamp(9.5px, 0.72vw, 12px);
+  --chapter-size: clamp(1.25rem, 1.76vw, 2.1rem); /* 30 / 1700 */
+  --chapter-body-size: clamp(0.8125rem, 0.94vw, 1.05rem);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  /* Type colour follows the footage: navy over bright video, white over dark video. */
+  --hero-type: var(--ink);
+  --hero-type-shadow: 0 0 0 transparent;
+  --intro-haze: rgb(255 255 255 / 0.6);
+
+  position: relative;
+  /* Sky-to-sand wash shown for the instant before the poster paints. */
+  background: linear-gradient(180deg, #bcd8f2 0%, #d9e9f5 55%, #efe4cc 100%);
+}
+
+.hero[data-footage='dark'] {
+  --hero-type: #ffffff;
+  --hero-type-shadow: 0 1px 16px rgb(0 0 0 / 0.38);
+  --intro-haze: rgb(3 8 20 / 0.5);
+}
+
+/* Until the load-in starts, keep the copy hidden so nothing flashes before it animates. */
+.hero[data-intro='pending'] [data-reveal],
+.hero[data-intro='pending'] .hero__title {
+  opacity: 0;
+}
+
+.hero__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100lvh;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* ----------------------------------------------------------------- media */
+
+.hero__media {
+  position: absolute;
+  inset: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  /* Room for the pointer parallax so edges never show. */
+  .hero__media {
+    inset: -2.5%;
+  }
+}
+
+.hero__media-inner {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 40%;
+}
+
+.hero__canvas,
+.hero__poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hero__poster {
+  object-fit: cover;
+  transition:
+    opacity 0.6s linear,
+    visibility 0s linear 0s;
+}
+
+.hero__poster.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.6s linear,
+    visibility 0s linear 0.6s;
+}
+
+/* --------------------------------------------------------------- overlay */
+
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.hero__overlay a,
+.hero__overlay button {
+  pointer-events: auto;
+}
+
+/* Crest + wordmark share the menu button's row (top 32, left 48 on the reference). */
+.hero__brand {
+  position: absolute;
+  top: var(--header-top);
+  left: var(--edge);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  height: var(--menu-size);
+  border-radius: 12px;
+}
+
+.hero__brand-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--brand-gap);
+}
+
+.hero__crest {
+  width: auto;
+  height: var(--crest-h);
+  filter: drop-shadow(0 3px 8px rgb(14 22 48 / 0.18));
+  transition: transform 0.3s ease;
+}
+
+.hero__brand:hover .hero__crest {
+  transform: scale(1.05);
+}
+
+/* Sora Light with wide tracking: the airy, AERIOS-like brand voice from the mood board. */
+.hero__brand-name {
+  margin-right: -0.42em;
+  font-family: var(--font-brand);
+  font-size: var(--brand-size);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: 0.42em;
+  color: var(--hero-type);
+  text-shadow: var(--hero-type-shadow);
+  white-space: nowrap;
+  transition:
+    color 0.7s ease,
+    text-shadow 0.7s ease;
+}
+
+/* Right column, bottom-anchored 8% above the fold, sharing the menu button's right edge. */
+.hero__intro {
+  position: absolute;
+  right: var(--edge);
+  bottom: calc(var(--vis-bottom) + clamp(48px, 8svh, 110px));
+  left: var(--column-left);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.hero__title {
+  font-family: var(--font-display);
+  font-size: var(--title-size);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--hero-type);
+  text-shadow: var(--hero-type-shadow);
+  transition:
+    color 0.7s ease,
+    text-shadow 0.7s ease;
+}
+
+.hero__title-line {
+  display: block;
+  white-space: nowrap;
+}
+
+.hero__lede {
+  margin-top: var(--gap-title);
+  font-size: var(--lede-size);
+  font-weight: 550;
+  line-height: 1.6;
+  color: var(--hero-type);
+  text-shadow: var(--hero-type-shadow);
+  text-wrap: pretty;
+  transition:
+    color 0.7s ease,
+    text-shadow 0.7s ease;
+}
+
+/* Load-in colour sweep (the reference's "DiaText"): a 34%-wide band of navy, sand, teal and
+   cream crosses the text left to right, leaving solid navy behind it. */
+.dia {
+  color: transparent;
+  background-image: linear-gradient(
+    90deg,
+    var(--hero-type) 0%,
+    var(--hero-type) 44.3%,
+    #c5a880 47.2%,
+    #005f73 50%,
+    #e9d8a6 52.8%,
+    transparent 55.7%,
+    transparent 100%
+  );
+  background-repeat: no-repeat;
+  background-size: 300% 100%;
+  background-position: 100% 0%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow: none;
+}
+
+.hero__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--actions-gap);
+  margin-top: var(--gap-lede);
+}
+
+/* The face carries the visuals (fill, hover scale) so the link box itself never transforms. */
+.pill-btn,
+.round-btn {
+  display: inline-flex;
+  border-radius: 999px;
+}
+
+.pill-btn__face {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: var(--pill-h);
+  padding: 0 var(--pill-pad);
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--ink);
+  box-shadow: var(--shadow-md);
+  font-family: var(--font-display);
+  font-size: var(--pill-font);
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+/* Ink fill rises from below while the label rolls up. */
+.pill-btn__face::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--ink);
+  transform: translateY(102%);
+  transition: transform 0.6s var(--ease-out);
+}
+
+.pill-btn__roll {
+  display: grid;
+  height: 1.25em;
+  overflow: hidden;
+  line-height: 1.25em;
+}
+
+.pill-btn__label {
+  display: block;
+  transition:
+    transform 0.6s var(--ease-out),
+    color 0.4s ease;
+}
+
+.pill-btn:hover .pill-btn__face,
+.pill-btn:focus-visible .pill-btn__face {
+  transform: scale(1.02);
+  box-shadow: var(--shadow-lg);
+}
+
+.pill-btn:hover .pill-btn__face::before,
+.pill-btn:focus-visible .pill-btn__face::before {
+  transform: translateY(0);
+}
+
+.pill-btn:hover .pill-btn__label,
+.pill-btn:focus-visible .pill-btn__label {
+  transform: translateY(-100%);
+  color: #ffffff;
+}
+
+.pill-btn:active .pill-btn__face,
+.round-btn:active .round-btn__face {
+  transform: scale(0.95);
+}
+
+.round-btn__face {
+  display: grid;
+  place-items: center;
+  width: var(--round-size);
+  height: var(--round-size);
+  border-radius: 50%;
+  background: #ffffff;
+  color: var(--ink);
+  box-shadow: var(--shadow-md);
+  transition:
+    transform 0.3s ease,
+    background-color 0.45s ease,
+    color 0.45s ease;
+}
+
+.round-btn__icon {
+  width: 41%; /* 18 / 44 */
+  height: 41%;
+  transition: transform 0.6s var(--ease-out);
+}
+
+.round-btn:hover .round-btn__face,
+.round-btn:focus-visible .round-btn__face {
+  transform: scale(1.02);
+  background: var(--ink);
+  color: #ffffff;
+}
+
+.round-btn:hover .round-btn__icon,
+.round-btn:focus-visible .round-btn__icon {
+  transform: rotate(45deg);
+}
+
+/* Skip intro + switch video: dark glass controls pinned to the bottom of the visible viewport. */
+.hero__controls {
+  position: absolute;
+  bottom: calc(var(--vis-bottom) + var(--skip-inset));
+  left: var(--skip-inset);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: clamp(6px, 0.5vw, 10px);
+}
+
+.skip-btn {
+  display: inline-flex;
+  border-radius: 999px;
+  transition: opacity 0.5s ease;
+}
+
+.skip-btn__face {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(6px, 0.47vw, 10px);
+  height: var(--skip-h);
+  padding: 0 clamp(12px, 0.94vw, 18px);
+  border: 1px solid rgb(255 255 255 / 0.25);
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.35);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-lg);
+  color: #ffffff;
+  font-family: var(--font-brand);
+  font-size: var(--skip-font);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition:
+    transform 0.3s ease,
+    background-color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.skip-btn__icon {
+  width: clamp(11px, 0.82vw, 15px);
+  height: clamp(11px, 0.82vw, 15px);
+  color: #c8a96b;
+  transition: transform 0.5s var(--ease-out);
+}
+
+.skip-btn:hover .skip-btn__face,
+.skip-btn:focus-visible .skip-btn__face {
+  transform: scale(1.05);
+  border-color: rgb(255 255 255 / 0.5);
+  background: rgb(0 0 0 / 0.6);
+}
+
+.skip-btn:hover .skip-btn__icon {
+  transform: translateX(2px);
+}
+
+/* Round "change video" button in the same dark glass as the skip pill. */
+.switch-btn {
+  display: inline-flex;
+  border-radius: 50%;
+}
+
+.switch-btn__face {
+  display: grid;
+  place-items: center;
+  width: var(--skip-h);
+  height: var(--skip-h);
+  border: 1px solid rgb(255 255 255 / 0.25);
+  border-radius: 50%;
+  background: rgb(0 0 0 / 0.35);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-lg);
+  color: #c8a96b;
+  transition:
+    transform 0.3s ease,
+    background-color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.switch-btn__icon {
+  width: 46%;
+  height: 46%;
+}
+
+.switch-btn:hover .switch-btn__face,
+.switch-btn:focus-visible .switch-btn__face {
+  transform: scale(1.05);
+  border-color: rgb(255 255 255 / 0.5);
+  background: rgb(0 0 0 / 0.6);
+}
+
+.switch-btn:active .switch-btn__face {
+  transform: scale(0.95);
+}
+
+/* Waiting for the other video's frame at this scroll position. */
+.switch-btn[data-state='loading'] .switch-btn__face {
+  animation: hero-spin 0.9s linear infinite;
+}
+
+@keyframes hero-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+/* -------------------------------------------------------------- captions */
+
+.chapter {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.chapter__inner {
+  position: relative;
+}
+
+/* During a video switch the captions crossfade with the picture instead of jumping. */
+.is-switching .chapter__inner {
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+
+/* A soft local haze keeps copy legible over busy frames: dreamlike mist rather than a box. */
+.chapter__haze {
+  position: absolute;
+  inset: -45% -18%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(255 255 255 / 0.55), rgb(255 255 255 / 0.22) 58%, rgb(255 255 255 / 0));
+  filter: blur(4px);
+}
+
+.chapter__heading {
+  margin-bottom: clamp(6px, 0.59vw, 12px); /* 10 / 1700 */
+  font-family: var(--font-display);
+  font-size: var(--chapter-size);
+  font-weight: 750;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.chapter__body {
+  font-size: var(--chapter-body-size);
+  font-weight: 600;
+  line-height: 1.55;
+  letter-spacing: 0.005em;
+  text-wrap: pretty;
+}
+
+/* The reference's warm sand halo keeps navy legible where it crosses the blue kit. */
+.chapter--ink {
+  color: var(--ink);
+}
+
+.chapter--ink .chapter__heading {
+  text-shadow: 0 1px 4px rgb(197 168 128 / 0.6);
+}
+
+.chapter--ink .chapter__body {
+  text-shadow: 0 1px 3px rgb(197 168 128 / 0.5);
+}
+
+.chapter--light {
+  color: #ffffff;
+  text-shadow: 0 1px 18px rgb(4 10 24 / 0.38);
+}
+
+.chapter--light .chapter__haze {
+  background: radial-gradient(closest-side, rgb(6 12 30 / 0.4), rgb(6 12 30 / 0.15) 58%, rgb(6 12 30 / 0));
+}
+
+/* Placements mirror the reference: 8% from the side, a centred bottom caption at 84%, and a
+   conclusion whose top edge sits on the midline. Ours sit higher at the sides to clear the subject. */
+.chapter--story-left,
+.chapter--story-right {
+  top: var(--caption-top, 30%);
+  width: min(90%, 28.2vw); /* 480 / 1700 */
+  translate: 0 -50%;
+}
+
+.chapter--story-left {
+  left: 8%;
+}
+
+.chapter--story-right {
+  right: 8%;
+}
+
+.chapter--story-center-bottom {
+  right: 0;
+  bottom: calc(var(--vis-bottom) + 16svh);
+  left: 0;
+  width: min(90%, 34.1vw); /* 580 / 1700 */
+  margin-inline: auto;
+  text-align: center;
+}
+
+.chapter--story-conclusion {
+  top: 50%;
+  right: 0;
+  left: 0;
+  width: min(90%, 36.5vw); /* 620 / 1700 */
+  margin-inline: auto;
+  text-align: center;
+}
+
+/* ------------------------------------------------- narrow and portrait screens */
+
+@media (max-width: 767px), (max-aspect-ratio: 3/4) {
+  .hero {
+    --title-size: clamp(1.75rem, 8vw, 2.4rem);
+    --lede-size: 0.95rem;
+    --gap-title: 14px;
+    --gap-lede: 20px;
+    --pill-h: 42px;
+    --pill-pad: 22px;
+    --pill-font: 11px;
+    --chapter-size: clamp(1.35rem, 6.2vw, 1.9rem);
+    --chapter-body-size: 0.9rem;
+  }
+
+  .hero__intro {
+    right: var(--edge);
+    bottom: calc(var(--vis-bottom) + 40px);
+    left: var(--edge);
+    max-width: 32rem;
+  }
+
+  .hero__intro::before {
+    content: '';
+    position: absolute;
+    inset: -28% -14% -22%;
+    z-index: -1;
+    background: radial-gradient(72% 62% at 38% 56%, var(--intro-haze), transparent);
+    pointer-events: none;
+  }
+
+  /* The reference hides skip intro on phones; the switch button moves to the bottom-right corner. */
+  .skip-btn {
+    display: none;
+  }
+
+  .hero__controls {
+    right: var(--skip-inset);
+    left: auto;
+  }
+
+  /* Captions move to the top 14%, centred (reference mobile layout). */
+  .chapter--story-left,
+  .chapter--story-right,
+  .chapter--story-center-bottom,
+  .chapter--story-conclusion {
+    top: 14svh;
+    right: var(--edge);
+    bottom: auto;
+    left: var(--edge);
+    width: auto;
+    margin-inline: 0;
+    text-align: center;
+    translate: none;
+  }
+
+  /* Portrait crops put sky behind the top of the frame, so every caption uses ink there. */
+  .chapter--light {
+    color: var(--ink);
+    text-shadow: 0 1px 4px rgb(197 168 128 / 0.6);
+  }
+
+  .chapter--light .chapter__haze {
+    background: radial-gradient(closest-side, rgb(255 255 255 / 0.55), rgb(255 255 255 / 0.22) 58%, rgb(255 255 255 / 0));
+  }
+}

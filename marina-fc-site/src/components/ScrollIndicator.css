@@ -1,0 +1,58 @@
+/* Short overlay scroll pill: 3 px wide, 32 px tall, with a wider invisible grab area. */
+.scroll-indicator {
+  position: fixed;
+  z-index: 60;
+  top: 10px;
+  right: 3px;
+  bottom: 10px;
+  width: 14px;
+  pointer-events: none;
+}
+
+.scroll-indicator__thumb {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 14px;
+  height: 32px;
+  cursor: grab;
+  pointer-events: auto;
+  touch-action: none;
+  will-change: transform;
+}
+
+.scroll-indicator__thumb::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 2px;
+  bottom: 0;
+  width: 3px;
+  border-radius: 3px;
+  background: rgb(11 31 58 / 0.62);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.55);
+  opacity: 0.35;
+  transition:
+    opacity 0.5s ease,
+    width 0.25s ease;
+}
+
+.scroll-indicator.is-active .scroll-indicator__thumb::before,
+.scroll-indicator__thumb:hover::before {
+  opacity: 1;
+}
+
+.scroll-indicator__thumb:hover::before,
+.scroll-indicator.is-dragging .scroll-indicator__thumb::before {
+  width: 5px;
+}
+
+.scroll-indicator.is-dragging .scroll-indicator__thumb {
+  cursor: grabbing;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-indicator__thumb::before {
+    transition: none;
+  }
+}

@@ -1,0 +1,24 @@
+/* The 3D ball cursor. Shown only on precise hovering pointers, above everything, never clickable. */
+.ball-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2147483000;
+  width: 34px;
+  height: 34px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  will-change: transform;
+  filter: drop-shadow(0 3px 4px rgb(11 31 58 / 0.28));
+}
+
+.ball-cursor.is-visible {
+  opacity: 1;
+}
+
+/* The ball replaces the system cursor everywhere while it is on screen. */
+html.ball-cursor-on,
+html.ball-cursor-on * {
+  cursor: none !important;
+}

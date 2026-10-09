@@ -1,0 +1,35 @@
+{
+  "id": "gemini",
+  "source": "gemini_HD.mp4",
+  "version": "8d0ee2fbca",
+  "mirrored": true,
+  "focus": 0.44,
+  "fps": 30,
+  "frameCount": 301,
+  "duration": 10.033,
+  "cuts": [
+    2.8,
+    3.75,
+    6,
+    8.633,
+    8.917,
+    9.717
+  ],
+  "poster": "/media/hero/gemini/poster.webp",
+  "sets": {
+    "desktop": {
+      "path": "/media/hero/gemini/desktop",
+      "width": 1920,
+      "height": 1080,
+      "count": 301,
+      "bytes": 42655830
+    },
+    "mobile": {
+      "path": "/media/hero/gemini/mobile",
+      "width": 810,
+      "height": 1080,
+      "count": 301,
+      "bytes": 17341278
+    }
+  }
+}

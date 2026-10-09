@@ -1,0 +1,25 @@
+/* Plain-CSS equivalents of the Tailwind classes in the React Bits VariableProximity-TS-TW source. */
+
+/* inline-block whitespace-nowrap */
+.vp-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* inline-block */
+.vp-space {
+  display: inline-block;
+}
+
+/* sr-only */
+.vp-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

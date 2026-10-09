@@ -1,0 +1,353 @@
+/*
+ * About section, laid out like the reference (Reference image 18) in the site's own design and
+ * colours. The block shares the gallery's container (81.8vw, centred). The copy column takes 46% of
+ * it; the photo sits on the right, running to the screen edge, its white left part under the copy.
+ * Spacing is the reference's, as a share of the container width.
+ */
+.about {
+  --about-pad: clamp(72px, 9.41vw, 180px);
+  --about-w: min(100vw - 2 * var(--edge), 81.8vw, 1680px);
+  --about-rule: rgb(11 31 58 / 0.12);
+  --about-gold: #c8a96b;
+
+  position: relative;
+  padding: var(--about-pad) var(--edge);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* Hidden until the reveal is set up, so nothing flashes on slow devices. */
+.about[data-reveal='pending'] :is(.about__eyebrow-text, .about__title, .about__para, .about__cta, .about__stat, .about__media-inner) {
+  opacity: 0;
+}
+
+.about__inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: var(--about-w);
+  margin-inline: auto;
+}
+
+/* ---------------------------------------------------------------- copy */
+
+.about__copy {
+  position: relative;
+  z-index: 1; /* above the photo's paper-coloured box */
+  width: 46%;
+  flex: none;
+}
+
+.about__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 0.9vw, 16px);
+}
+
+.about__eyebrow-line {
+  width: clamp(24px, 2.3vw, 40px);
+  height: 2px;
+  border-radius: 2px;
+  background: var(--about-gold);
+  transform-origin: left center;
+}
+
+.about__eyebrow-text {
+  font-family: var(--font-brand);
+  font-size: clamp(10px, 0.78vw, 13px);
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* Sora's wide caps carry the heading, echoing the wordmark; ShinyText sweeps a gold glint. */
+.about__title {
+  margin-top: clamp(18px, 2.7vw, 48px);
+  font-family: var(--font-brand);
+  font-size: clamp(1.6rem, 2.86vw, 3.6rem);
+  font-weight: 600;
+  line-height: 1.06;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.about__title-line {
+  display: block;
+  white-space: nowrap;
+}
+
+.about__para {
+  max-width: 34em;
+  margin-top: clamp(18px, 2.8vw, 48px);
+  font-family: var(--font-display);
+  font-size: clamp(0.98rem, 1.1vw, 1.3rem);
+  font-weight: 300;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.about__para strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.about__cta {
+  margin-top: clamp(20px, 2.5vw, 44px);
+}
+
+/* Sand pill; on hover an ink fill rises and the label rolls up (same pattern as the hero CTA). */
+.about-btn {
+  display: inline-flex;
+  border-radius: 999px;
+}
+
+.about-btn__face {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: clamp(42px, 3.3vw, 62px);
+  padding: 0 clamp(26px, 2.35vw, 44px);
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 999px;
+  background: #e8e3d7;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(13px, 0.94vw, 17px);
+  font-weight: 500;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.about-btn__face::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--ink);
+  transform: translateY(102%);
+  transition: transform 0.6s var(--ease-out);
+}
+
+.about-btn__roll {
+  display: grid;
+  height: 1.3em;
+  overflow: hidden;
+  line-height: 1.3em;
+}
+
+.about-btn__label {
+  display: block;
+  transition:
+    transform 0.6s var(--ease-out),
+    color 0.4s ease;
+}
+
+.about-btn:hover .about-btn__face,
+.about-btn:focus-visible .about-btn__face {
+  transform: scale(1.02);
+  box-shadow: 0 6px 16px rgb(11 31 58 / 0.12);
+}
+
+.about-btn:hover .about-btn__face::before,
+.about-btn:focus-visible .about-btn__face::before {
+  transform: translateY(0);
+}
+
+.about-btn:hover .about-btn__label,
+.about-btn:focus-visible .about-btn__label {
+  transform: translateY(-100%);
+  color: #ffffff;
+}
+
+.about-btn:active .about-btn__face {
+  transform: scale(0.95);
+}
+
+/* --------------------------------------------------------------- stats */
+
+.about__stats {
+  position: relative;
+  margin-top: clamp(22px, 2.5vw, 44px);
+  padding-top: clamp(14px, 1.2vw, 22px);
+}
+
+.about__stats-rule {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: var(--about-rule);
+  transform-origin: left center;
+}
+
+.about__stats-list {
+  display: flex;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.about__stat-item {
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.about__stat-divider {
+  flex: none;
+  width: 1px;
+  margin-right: clamp(12px, 1.3vw, 24px);
+  background: var(--about-rule);
+  transform-origin: center top;
+}
+
+.about__stat {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 0.75vw, 14px);
+  min-width: 0;
+  padding-right: clamp(8px, 1vw, 18px);
+}
+
+.about__stat-icon {
+  flex: none;
+  width: clamp(20px, 1.75vw, 30px);
+  height: clamp(20px, 1.75vw, 30px);
+  color: var(--about-gold);
+}
+
+.about__stat-text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.about__stat-value {
+  font-family: var(--font-brand);
+  font-size: clamp(1rem, 1.42vw, 1.75rem);
+  font-weight: 600;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.about__stat-label {
+  font-family: var(--font-brand);
+  font-size: clamp(8.5px, 0.62vw, 11px);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  line-height: 1.35;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  opacity: 0.75;
+}
+
+/* --------------------------------------------------------------- photo */
+
+/* The whole image at its own ratio, with its right edge on the screen edge: the photo runs to the
+   image's right border, so it now meets the edge of the screen instead of stopping mid-page.
+   Sized so the gap between copy and photo matches the reference; capped to limit upscaling. */
+.about__media {
+  --media-w: min(68vw, 1100px);
+
+  position: absolute;
+  top: 50%;
+  right: calc((var(--about-w) - 100vw) / 2);
+  z-index: 0;
+  width: var(--media-w);
+  margin-top: calc(var(--media-w) * -485 / 862 / 2); /* vertically centred on the copy block */
+}
+
+.about__media-inner {
+  position: relative;
+  isolation: isolate;
+}
+
+/* The supplied image, as is: no filter, blend, crop or scaling beyond its natural ratio. */
+.about__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Page colour over the image's plain white surround only. The mask (built from the image by
+   npm run matte:about) covers the neutral near-white background and none of the photo, and
+   "darken" only ever lowers a channel to the page's value, so the background white becomes the
+   page colour and the photo is left exactly as supplied. */
+.about__matte {
+  position: absolute;
+  inset: 0;
+  background: var(--paper);
+  mix-blend-mode: darken;
+  -webkit-mask: var(--matte) center / 100% 100% no-repeat;
+  mask: var(--matte) center / 100% 100% no-repeat;
+  pointer-events: none;
+}
+
+/* ------------------------------------------------ tablets and phones: stacked */
+
+@media (max-width: 899px) {
+  /* Full content width between the site's edges (the 81.8vw cap is for the side-by-side layout). */
+  .about {
+    --about-w: calc(100vw - 2 * var(--edge));
+  }
+
+  .about__inner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .about__copy {
+    width: 100%;
+  }
+
+  .about__title {
+    font-size: clamp(1.6rem, 6.4vw, 2.6rem);
+  }
+
+  .about__title-line {
+    white-space: normal;
+  }
+
+  .about__para {
+    font-size: 1rem;
+  }
+
+  /* Full-bleed, still the whole photo at its natural ratio. */
+  .about__media {
+    --media-w: 100vw;
+
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 100vw;
+    margin: clamp(28px, 6vw, 48px) 0 0 calc(-1 * var(--edge));
+  }
+}
+
+@media (max-width: 560px) {
+  /* Icon above the value so each of the three stats fits its column. */
+  .about__stat {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .about__stat-value {
+    font-size: 1rem;
+    white-space: normal;
+  }
+
+  .about__stat-label {
+    font-size: 9px;
+  }
+}

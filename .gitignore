@@ -1,0 +1,28 @@
+# Reference material: client screenshots, design references, the original videos, coach photos
+# and component snippets. Kept on the local machine only (about 220 MB); the site never loads them.
+/Reference(can_refer_for_design)/
+/clients-currentWebsite(don't_refer_for_design)/
+/website-design(shouldFollowThis)/
+/reactBits/
+
+# Installed packages and build output (recreated by npm install / npm run build)
+node_modules/
+dist/
+dist-ssr/
+
+# Python environment for marina-fc-site/scripts/build-team.py
+.venv/
+__pycache__/
+
+# Logs, local environment files
+*.log
+.env
+.env.*
+*.local
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
