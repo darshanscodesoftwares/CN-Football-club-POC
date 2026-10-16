@@ -4,7 +4,8 @@
 /clients-currentWebsite(don't_refer_for_design)/
 /website-design(shouldFollowThis)/
 /reactBits/
-# Source photos for the coaches section (scripts/build-team.py reads them)
+# Source photos (coaches, gallery, About), kept on the local machine only; the build scripts in
+# marina-fc-site/scripts read them and write the web-sized copies the site loads.
 /replace-image/
 
 # Installed packages and build output (recreated by npm install / npm run build)

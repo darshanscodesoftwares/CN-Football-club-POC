@@ -34,9 +34,11 @@ coach photos live in the local folders next to `marina-fc-site/` (see `.gitignor
 that rebuild media from them only work where those folders exist:
 
 - `npm run frames:hero` rebuilds the hero video frames.
-- `npm run matte:about` and `npm run matte:footer` rebuild the background-colour masks.
-- `scripts/build-team.py` rebuilds the coaches layout and cutouts (needs Python with numpy and
-  opencv-python-headless).
+- `npm run matte:footer` rebuilds the footer's sky mask.
+- `scripts/build-about-image.py` colour-grades the About photo from `replace-image/about/` and
+  rebuilds its mask; `scripts/build-gallery.py` sizes the gallery photos from `replace-image/gallery/`.
+- `scripts/build-team.py` rebuilds the coaches layout and cutouts from the photos in
+  `replace-image/` (needs Python with numpy and opencv-python-headless).
 
 ## Placeholders still waiting on the client
 
