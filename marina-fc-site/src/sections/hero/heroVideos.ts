@@ -55,7 +55,35 @@ const lastFrameTime = (frames: FramesManifest) => (frames.frameCount - 1) / fram
 
 export const HERO_VIDEOS: readonly HeroVideo[] = [
   {
-    // Anime story, mirrored so the boy stands left of centre like the reference.
+    // The default: the newer anime cut of the story (gemini_HD-new.mp4), mirrored so the right
+    // side stays clear for the headline. It ends on the goal rather than a celebration.
+    id: 'gemini-new',
+    label: 'Gemini (new)',
+    frames: geminiNew,
+    footage: 'bright',
+    focusY: 0.35,
+    timeMap: [
+      [0, 0],
+      [0.06, 0.12], // nearly still while the opening copy leaves
+      [0.22, 2.6], // beach dribble, the ball kicked skyward, then the whip to the street
+      [0.31, 3.8], // street game, then through the academy gate
+      [0.47, 5.25], // academy match, then the sunburst
+      [0.66, 7.7], // stadium reveal and dribble, then the close-up
+      [0.74, 8.5], // determined close-up, then the power kick
+      [0.83, 9.15], // the strike, then the ball bursting into the net
+      [0.94, lastFrameTime(geminiNew)],
+      [1, lastFrameTime(geminiNew)],
+    ],
+    captions: [
+      // Lower right over the sea; leaves before the street scene, where the boy moves right.
+      { copy: 'grassroots', range: [0.07, 0.21], placement: 'story-right', top: '60%', tone: 'ink' },
+      { copy: 'academy', range: [0.32, 0.46], placement: 'story-center-bottom', tone: 'light' },
+      { copy: 'competitive', range: [0.48, 0.65], placement: 'story-conclusion', tone: 'ink' },
+      { copy: 'welcome', range: [0.86, 1.12], placement: 'story-left', top: '30%', tone: 'ink' },
+    ],
+  },
+  {
+    // The earlier anime cut, mirrored so the boy stands left of centre like the reference.
     id: 'gemini',
     label: 'Gemini',
     frames: gemini,
@@ -101,34 +129,6 @@ export const HERO_VIDEOS: readonly HeroVideo[] = [
       { copy: 'academy', range: [0.39, 0.57], placement: 'story-center-bottom', tone: 'light' },
       { copy: 'competitive', range: [0.59, 0.72], placement: 'story-right', top: '45%', tone: 'light' },
       { copy: 'welcome', range: [0.86, 1.12], placement: 'story-left', top: '34%', tone: 'light' },
-    ],
-  },
-  {
-    // Newer anime cut of the same story (gemini_HD-new.mp4), mirrored like the first so the
-    // right side stays clear for the headline. It ends on the goal rather than a celebration.
-    id: 'gemini-new',
-    label: 'Gemini (new)',
-    frames: geminiNew,
-    footage: 'bright',
-    focusY: 0.35,
-    timeMap: [
-      [0, 0],
-      [0.06, 0.12], // nearly still while the opening copy leaves
-      [0.22, 2.6], // beach dribble, the ball kicked skyward, then the whip to the street
-      [0.31, 3.8], // street game, then through the academy gate
-      [0.47, 5.25], // academy match, then the sunburst
-      [0.66, 7.7], // stadium reveal and dribble, then the close-up
-      [0.74, 8.5], // determined close-up, then the power kick
-      [0.83, 9.15], // the strike, then the ball bursting into the net
-      [0.94, lastFrameTime(geminiNew)],
-      [1, lastFrameTime(geminiNew)],
-    ],
-    captions: [
-      // Lower right over the sea; leaves before the street scene, where the boy moves right.
-      { copy: 'grassroots', range: [0.07, 0.21], placement: 'story-right', top: '60%', tone: 'ink' },
-      { copy: 'academy', range: [0.32, 0.46], placement: 'story-center-bottom', tone: 'light' },
-      { copy: 'competitive', range: [0.48, 0.65], placement: 'story-conclusion', tone: 'ink' },
-      { copy: 'welcome', range: [0.86, 1.12], placement: 'story-left', top: '30%', tone: 'ink' },
     ],
   },
 ]

@@ -13,7 +13,7 @@ function preloadHeroPoster(): Plugin {
     name: 'marina:preload-hero-poster',
     transformIndexHtml() {
       // The default (first) hero video in src/sections/hero/heroVideos.ts.
-      const manifestUrl = new URL('./src/sections/hero/videos/gemini.frames.json', import.meta.url)
+      const manifestUrl = new URL('./src/sections/hero/videos/gemini-new.frames.json', import.meta.url)
       const manifest = JSON.parse(readFileSync(manifestUrl, 'utf8')) as { poster: string; version: string }
       return [
         {
