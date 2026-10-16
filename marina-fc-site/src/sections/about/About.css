@@ -1,31 +1,37 @@
 /*
- * About section, laid out like the reference (Reference image 18) in the site's own design and
- * colours. The block shares the gallery's container (81.8vw, centred). The copy column takes 46% of
- * it; the photo sits on the right, running to the screen edge, its white left part under the copy.
- * Spacing is the reference's, as a share of the container width.
+ * About section, straight on the page's patterned wall, in three rows that share the gallery's
+ * container (81.8vw, centred), so every left and right edge lines up: the copy beside the
+ * colour-graded photo (which runs on to the screen edge), the four sport programmes as a row of
+ * translucent cards, and a navy stats band. Navy is the site's ink; the accent is the lime of the
+ * new kit (the highlight, icon chips, band numbers).
  */
 .about {
-  --about-pad: clamp(72px, 9.41vw, 180px);
+  --about-pad: clamp(72px, 8.5vw, 168px);
   --about-w: min(100vw - 2 * var(--edge), 81.8vw, 1680px);
-  --about-rule: rgb(11 31 58 / 0.12);
-  --about-gold: #c8a96b;
+  --about-rule: rgb(11 31 58 / 0.1);
+  --lime: #c6f02f;
+  --lime-soft: rgb(198 240 47 / 0.22);
+  --lime-ink: #557300; /* lime dark enough to read on the page colour */
 
   position: relative;
   padding: var(--about-pad) var(--edge);
-  background: var(--paper);
   color: var(--ink);
 }
 
 /* Hidden until the reveal is set up, so nothing flashes on slow devices. */
-.about[data-reveal='pending'] :is(.about__eyebrow-text, .about__title, .about__para, .about__cta, .about__stat, .about__media-inner) {
+.about[data-reveal='pending'] :is(.about__eyebrow-text, .about__title, .about__para, .about__actions, .about__media-inner, .about__card, .about__cards-label, .about__band) {
   opacity: 0;
 }
 
+/* First row: tall enough for the photo, which is centred on it beside the copy. */
 .about__inner {
+  --media-w: min(66vw, 1080px);
+
   position: relative;
   display: flex;
   align-items: center;
   width: var(--about-w);
+  min-height: calc(var(--media-w) * 485 / 862);
   margin-inline: auto;
 }
 
@@ -33,7 +39,7 @@
 
 .about__copy {
   position: relative;
-  z-index: 1; /* above the photo's paper-coloured box */
+  z-index: 1; /* above the photo's white surround */
   width: 46%;
   flex: none;
 }
@@ -48,7 +54,7 @@
   width: clamp(24px, 2.3vw, 40px);
   height: 2px;
   border-radius: 2px;
-  background: var(--about-gold);
+  background: var(--lime-ink);
   transform-origin: left center;
 }
 
@@ -58,30 +64,47 @@
   font-weight: 500;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--ink-soft);
+  color: var(--lime-ink);
 }
 
-/* Sora's wide caps carry the heading, echoing the wordmark; ShinyText sweeps a gold glint. */
+/* Sora's wide caps carry the heading, echoing the wordmark; ShinyText sweeps a lime glint. */
 .about__title {
-  margin-top: clamp(18px, 2.7vw, 48px);
+  isolation: isolate; /* keeps the highlight behind the letters */
+  margin-top: clamp(16px, 2vw, 36px);
   font-family: var(--font-brand);
-  font-size: clamp(1.6rem, 2.86vw, 3.6rem);
-  font-weight: 600;
-  line-height: 1.06;
-  letter-spacing: -0.01em;
+  font-size: clamp(1.9rem, 3.6vw, 4.6rem);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.015em;
   text-transform: uppercase;
 }
 
 .about__title-line {
+  position: relative;
   display: block;
+  width: fit-content;
   white-space: nowrap;
 }
 
+/* A lime marker stroke under the last line, drawn in on reveal. */
+.about__mark {
+  position: absolute;
+  z-index: -1;
+  left: -0.06em;
+  right: -0.1em;
+  bottom: 0.04em;
+  height: 0.36em;
+  border-radius: 0.1em 0.3em 0.2em 0.1em;
+  background: var(--lime);
+  transform: skewX(-8deg);
+  transform-origin: left center;
+}
+
 .about__para {
-  max-width: 34em;
-  margin-top: clamp(18px, 2.8vw, 48px);
+  max-width: 33em;
+  margin-top: clamp(18px, 2.2vw, 40px);
   font-family: var(--font-display);
-  font-size: clamp(0.98rem, 1.1vw, 1.3rem);
+  font-size: clamp(0.98rem, 1.08vw, 1.28rem);
   font-weight: 300;
   line-height: 1.65;
   color: var(--ink-soft);
@@ -93,11 +116,15 @@
   color: var(--ink);
 }
 
-.about__cta {
-  margin-top: clamp(20px, 2.5vw, 44px);
+.about__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(16px, 1.8vw, 32px);
+  margin-top: clamp(22px, 2.5vw, 44px);
 }
 
-/* Sand pill; on hover an ink fill rises and the label rolls up (same pattern as the hero CTA). */
+/* Navy pill; on hover a lime fill rises and the label rolls up (same pattern as the hero CTA). */
 .about-btn {
   display: inline-flex;
   border-radius: 999px;
@@ -107,17 +134,17 @@
   position: relative;
   display: inline-flex;
   align-items: center;
-  height: clamp(42px, 3.3vw, 62px);
+  height: clamp(44px, 3.3vw, 62px);
   padding: 0 clamp(26px, 2.35vw, 44px);
   overflow: hidden;
   isolation: isolate;
   border-radius: 999px;
-  background: #e8e3d7;
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
-  color: var(--ink);
+  background: var(--ink);
+  box-shadow: 0 8px 22px rgb(11 31 58 / 0.18);
+  color: #ffffff;
   font-family: var(--font-display);
   font-size: clamp(13px, 0.94vw, 17px);
-  font-weight: 500;
+  font-weight: 600;
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease;
@@ -129,7 +156,7 @@
   inset: 0;
   z-index: -1;
   border-radius: inherit;
-  background: var(--ink);
+  background: var(--lime);
   transform: translateY(102%);
   transition: transform 0.6s var(--ease-out);
 }
@@ -151,7 +178,7 @@
 .about-btn:hover .about-btn__face,
 .about-btn:focus-visible .about-btn__face {
   transform: scale(1.02);
-  box-shadow: 0 6px 16px rgb(11 31 58 / 0.12);
+  box-shadow: 0 10px 26px rgb(11 31 58 / 0.22);
 }
 
 .about-btn:hover .about-btn__face::before,
@@ -162,108 +189,60 @@
 .about-btn:hover .about-btn__label,
 .about-btn:focus-visible .about-btn__label {
   transform: translateY(-100%);
-  color: #ffffff;
+  color: var(--ink);
 }
 
 .about-btn:active .about-btn__face {
   transform: scale(0.95);
 }
 
-/* --------------------------------------------------------------- stats */
-
-.about__stats {
-  position: relative;
-  margin-top: clamp(22px, 2.5vw, 44px);
-  padding-top: clamp(14px, 1.2vw, 22px);
-}
-
-.about__stats-rule {
-  position: absolute;
-  inset: 0 0 auto;
-  height: 1px;
-  background: var(--about-rule);
-  transform-origin: left center;
-}
-
-.about__stats-list {
-  display: flex;
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
-
-.about__stat-item {
-  display: flex;
-  flex: 1 1 0;
-  min-width: 0;
-}
-
-.about__stat-divider {
-  flex: none;
-  width: 1px;
-  margin-right: clamp(12px, 1.3vw, 24px);
-  background: var(--about-rule);
-  transform-origin: center top;
-}
-
-.about__stat {
-  display: flex;
+/* Text link with an arrow that slides on hover. */
+.about-link {
+  display: inline-flex;
   align-items: center;
-  gap: clamp(8px, 0.75vw, 14px);
-  min-width: 0;
-  padding-right: clamp(8px, 1vw, 18px);
-}
-
-.about__stat-icon {
-  flex: none;
-  width: clamp(20px, 1.75vw, 30px);
-  height: clamp(20px, 1.75vw, 30px);
-  color: var(--about-gold);
-}
-
-.about__stat-text {
-  display: grid;
-  gap: 2px;
-  min-width: 0;
-}
-
-.about__stat-value {
-  font-family: var(--font-brand);
-  font-size: clamp(1rem, 1.42vw, 1.75rem);
-  font-weight: 600;
-  line-height: 1.15;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
-  text-transform: uppercase;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1.5px solid rgb(11 31 58 / 0.22);
   color: var(--ink);
-  white-space: nowrap;
+  font-family: var(--font-display);
+  font-size: clamp(13px, 0.94vw, 17px);
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 0.3s ease;
 }
 
-.about__stat-label {
-  font-family: var(--font-brand);
-  font-size: clamp(8.5px, 0.62vw, 11px);
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  line-height: 1.35;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-  opacity: 0.75;
+.about-link svg {
+  width: 1em;
+  height: 1em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.4s var(--ease-out);
+}
+
+.about-link:hover,
+.about-link:focus-visible {
+  border-color: var(--lime-ink);
+}
+
+.about-link:hover svg,
+.about-link:focus-visible svg {
+  transform: translateX(4px);
 }
 
 /* --------------------------------------------------------------- photo */
 
-/* The whole image at its own ratio, with its right edge on the screen edge: the photo runs to the
-   image's right border, so it now meets the edge of the screen instead of stopping mid-page.
-   Sized so the gap between copy and photo matches the reference; capped to limit upscaling. */
+/* The whole image at its own ratio, its right edge on the screen edge, vertically centred on the
+   row; its white left part runs under the copy and melts into the page. */
 .about__media {
-  --media-w: min(68vw, 1100px);
-
   position: absolute;
   top: 50%;
   right: calc((var(--about-w) - 100vw) / 2);
   z-index: 0;
   width: var(--media-w);
-  margin-top: calc(var(--media-w) * -485 / 862 / 2); /* vertically centred on the copy block */
+  margin-top: calc(var(--media-w) * -485 / 862 / 2);
 }
 
 .about__media-inner {
@@ -271,7 +250,6 @@
   isolation: isolate;
 }
 
-/* The supplied image, as is: no filter, blend, crop or scaling beyond its natural ratio. */
 .about__img {
   display: block;
   width: 100%;
@@ -280,18 +258,179 @@
   -webkit-user-drag: none;
 }
 
-/* Page colour over the image's plain white surround only. The mask (built from the image by
-   npm run matte:about) covers the neutral near-white background and none of the photo, and
-   "darken" only ever lowers a channel to the page's value, so the background white becomes the
-   page colour and the photo is left exactly as supplied. */
+/* The page (colour and pattern) over the image's plain white surround only. The mask covers the
+   neutral near-white background and none of the photo, and "darken" only ever lowers a channel to
+   the page's value, so the white becomes the page and the photo is left as graded. */
 .about__matte {
   position: absolute;
   inset: 0;
-  background: var(--paper);
   mix-blend-mode: darken;
   -webkit-mask: var(--matte) center / 100% 100% no-repeat;
   mask: var(--matte) center / 100% 100% no-repeat;
   pointer-events: none;
+}
+
+/* ----------------------------------------------------------- programmes */
+
+/* Second row: the four programmes side by side, on the same container as the rows around it. */
+.about__cards {
+  position: relative;
+  z-index: 1;
+  width: var(--about-w);
+  margin: clamp(36px, 3.6vw, 72px) auto 0;
+}
+
+.about__cards-label {
+  margin-bottom: clamp(12px, 1.1vw, 20px);
+  font-family: var(--font-brand);
+  font-size: clamp(10px, 0.72vw, 12px);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgb(11 31 58 / 0.55);
+}
+
+.about__cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(12px, 1.2vw, 22px);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+/* Translucent cards: the page's pattern shows faintly through them. */
+.about__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: clamp(190px, 14vw, 260px);
+  padding: clamp(18px, 1.6vw, 30px);
+  border: 1px solid rgb(11 31 58 / 0.08);
+  border-radius: clamp(16px, 1.3vw, 24px);
+  background: rgb(255 255 255 / 0.55);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 1px 2px rgb(11 31 58 / 0.04);
+  transition:
+    transform 0.5s var(--ease-out),
+    box-shadow 0.5s var(--ease-out),
+    border-color 0.5s ease,
+    background-color 0.5s ease;
+}
+
+.about__card:hover {
+  transform: translateY(-4px);
+  border-color: rgb(127 163 15 / 0.45);
+  background: rgb(255 255 255 / 0.8);
+  box-shadow: 0 16px 36px rgb(11 31 58 / 0.1);
+}
+
+.about__card-icon {
+  display: grid;
+  place-items: center;
+  width: clamp(40px, 3vw, 54px);
+  height: clamp(40px, 3vw, 54px);
+  border-radius: 50%;
+  background: var(--lime-soft);
+  color: var(--ink);
+  transition: background-color 0.4s ease;
+}
+
+.about__card:hover .about__card-icon {
+  background: var(--lime);
+}
+
+.about__card-icon svg {
+  width: 56%;
+  height: 56%;
+}
+
+.about__card-name {
+  margin-top: clamp(14px, 1.2vw, 22px);
+  font-family: var(--font-brand);
+  font-size: clamp(1rem, 1.2vw, 1.45rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.about__card-blurb {
+  margin-top: 6px;
+  font-family: var(--font-display);
+  font-size: clamp(0.85rem, 0.88vw, 1.02rem);
+  margin-bottom: 14px;
+  line-height: 1.5;
+  color: rgb(11 31 58 / 0.72);
+  text-wrap: pretty;
+}
+
+.about__card-ages {
+  align-self: flex-start;
+  margin-top: auto;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgb(11 31 58 / 0.06);
+  font-family: var(--font-brand);
+  font-size: clamp(9.5px, 0.66vw, 11.5px);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+/* ---------------------------------------------------------- stats band */
+
+/* Navy band with a soft lime glow in one corner; lime numbers, white labels. */
+.about__band {
+  position: relative;
+  width: var(--about-w);
+  margin: clamp(20px, 1.6vw, 32px) auto 0;
+  overflow: hidden;
+  border-radius: clamp(18px, 1.6vw, 30px);
+  background:
+    radial-gradient(120% 160% at 100% 0%, rgb(198 240 47 / 0.16), transparent 45%),
+    var(--ink);
+  box-shadow: 0 24px 50px rgb(11 31 58 / 0.18);
+}
+
+.about__stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.about__stat {
+  display: grid;
+  gap: 6px;
+  align-content: center;
+  padding: clamp(22px, 2.4vw, 44px) clamp(18px, 2vw, 40px);
+}
+
+.about__stat + .about__stat {
+  border-left: 1px solid rgb(255 255 255 / 0.1);
+}
+
+.about__stat-value {
+  font-family: var(--font-brand);
+  font-size: clamp(1.4rem, 2.3vw, 2.9rem);
+  font-weight: 700;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  color: var(--lime);
+  white-space: nowrap;
+}
+
+.about__stat-label {
+  font-family: var(--font-brand);
+  font-size: clamp(9.5px, 0.7vw, 12px);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.72);
 }
 
 /* ------------------------------------------------ tablets and phones: stacked */
@@ -305,49 +444,85 @@
   .about__inner {
     flex-direction: column;
     align-items: stretch;
+    min-height: 0;
   }
 
   .about__copy {
     width: 100%;
   }
 
-  .about__title {
-    font-size: clamp(1.6rem, 6.4vw, 2.6rem);
-  }
-
-  .about__title-line {
-    white-space: normal;
-  }
-
-  .about__para {
-    font-size: 1rem;
-  }
-
-  /* Full-bleed, still the whole photo at its natural ratio. */
+  /* Full-bleed under the copy, still the whole photo at its natural ratio. */
   .about__media {
-    --media-w: 100vw;
-
     position: relative;
     top: auto;
     right: auto;
     width: 100vw;
     margin: clamp(28px, 6vw, 48px) 0 0 calc(-1 * var(--edge));
   }
+
+  .about__cards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .about__title {
+    font-size: clamp(2rem, 9vw, 3.4rem);
+  }
+
+  .about__para {
+    font-size: 1rem;
+  }
+
+  .about__stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .about__stat + .about__stat {
+    border-left: 0;
+  }
+
+  .about__stat:nth-child(even) {
+    border-left: 1px solid rgb(255 255 255 / 0.1);
+  }
+
+  .about__stat:nth-child(n + 3) {
+    border-top: 1px solid rgb(255 255 255 / 0.1);
+  }
 }
 
-@media (max-width: 560px) {
-  /* Icon above the value so each of the three stats fits its column. */
-  .about__stat {
-    flex-direction: column;
-    align-items: flex-start;
+@media (max-width: 480px) {
+  .about__cards-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Compact rows: icon on the left, name, blurb and ages beside it. */
+  .about__card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 14px;
+    align-items: start;
+    min-height: 0;
+    padding: 16px;
+  }
+
+  .about__card-icon {
+    grid-row: span 3;
+  }
+
+  .about__card-name {
+    margin-top: 2px;
+  }
+
+  .about__card-blurb {
+    margin-bottom: 10px;
+  }
+
+  .about__card-ages {
+    justify-self: start;
+    margin-top: 0;
   }
 
   .about__stat-value {
-    font-size: 1rem;
+    font-size: 1.3rem;
     white-space: normal;
-  }
-
-  .about__stat-label {
-    font-size: 9px;
   }
 }

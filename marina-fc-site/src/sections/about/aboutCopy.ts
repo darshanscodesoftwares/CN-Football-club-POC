@@ -1,18 +1,23 @@
+import { CLUB } from '../../club'
+
 /**
- * About section copy (Marina FC), arranged like the reference (Reference/image 18): eyebrow,
- * three-line heading, paragraph, button and a three-part stats row, with the beach photo beside it.
+ * About section copy: eyebrow, three-line heading (the last line highlighted), paragraph, two
+ * buttons, the photo, the four sport programmes and the stats band. Placeholder content for the
+ * pitch demo.
  * Each paragraph is a list of [text, bold?] runs; bold runs render as <strong>.
- *
- * The stats come from the client's own site (pathway cards, about bullets, hero badge). The
- * reference mock-up showed "10K+ players hosted" and "3 turf locations", which do not appear in
- * any Marina material, so they were not used.
  */
 export type Run = readonly [text: string, bold?: boolean]
 
-export type StatIcon = 'pathways' | 'badge' | 'calendar'
+export type SportIcon = 'football' | 'cricket' | 'badminton' | 'futsal'
+
+export interface Programme {
+  icon: SportIcon
+  name: string
+  blurb: string
+  ages: string
+}
 
 export interface Stat {
-  icon: StatIcon
   value: string
   /** When set, the value counts up from 0 to this number on reveal. */
   count?: number
@@ -21,35 +26,38 @@ export interface Stat {
 
 export const ABOUT_COPY = {
   eyebrow: 'About us',
-  titleLines: ['Developing complete', 'footballers on & off', 'the pitch'],
+  titleLines: ['One club.', 'Every game.', 'Every player.'],
   paragraph: [
-    ['At Marina Football Club, football is a vehicle for '],
-    ['personal growth', true],
-    [', '],
-    ['resilience', true],
-    [', and '],
-    ['athletic mastery', true],
-    ['. Our '],
-    ['360-degree philosophy', true],
-    [' balances '],
-    ['technical excellence', true],
-    [' with '],
-    ['character building', true],
-    ['.'],
+    [`${CLUB.name} is a `],
+    ['multi-sport academy', true],
+    [' where young players learn to '],
+    ['love the game', true],
+    [' first, then grow into it. Football, cricket, badminton and futsal, all coached with one philosophy: '],
+    ['technique, character and confidence', true],
+    [', built session by session.'],
   ] as readonly Run[],
-  cta: 'More About Us',
-  ctaHref: '#about',
-  stats: [
-    { icon: 'pathways', value: '4', count: 4, label: 'Development pathways' },
-    { icon: 'badge', value: 'AIFF/AFC', label: 'Licensed coaches' },
-    { icon: 'calendar', value: 'Since 2017', label: 'Grassroots to competitive' },
-  ] as readonly Stat[],
+  cta: { label: 'Join a programme', href: '#join' },
+  secondary: { label: 'Meet our coaches', href: '#coaches' },
+  programmesLabel: 'Our programmes',
+  programmes: [
+    { icon: 'football', name: 'Football', blurb: 'Grassroots to competitive squads, with weekly fixtures.', ages: 'Ages 5–19' },
+    { icon: 'cricket', name: 'Cricket', blurb: 'Net sessions, batting and bowling technique, match play.', ages: 'Ages 7–19' },
+    { icon: 'badminton', name: 'Badminton', blurb: 'Footwork, strokes and junior tournament preparation.', ages: 'Ages 6–18' },
+    { icon: 'futsal', name: 'Futsal', blurb: 'Fast small-sided play that sharpens touch and decisions.', ages: 'Ages 6–16' },
+  ] as readonly Programme[],
   image: {
-    src: '/media/about/beach-sunset.png',
-    /** Marks only the photo's plain white surround (npm run matte:about); see About.css. */
-    matte: '/media/about/beach-sunset-matte.png',
+    /** Colour-graded by scripts/build-about-image.py from ../replace-image/about. */
+    src: '/media/about/beach-graded.jpg',
+    /** Marks only the photo's plain white surround; see About.css. */
+    matte: '/media/about/beach-matte.png',
     width: 862,
     height: 485,
-    alt: 'A young player strikes the ball on a beach at sunset',
+    alt: 'A player striking the ball on the beach at sunset, sand spraying from his kick',
   },
-} as const
+  stats: [
+    { value: '4', count: 4, label: 'Sports, one academy' },
+    { value: 'U-6 to U-19', label: 'Age-group squads' },
+    { value: 'Since 2017', label: 'Coaching young players' },
+    { value: '6', count: 6, label: 'Training days a week' },
+  ] as readonly Stat[],
+}
