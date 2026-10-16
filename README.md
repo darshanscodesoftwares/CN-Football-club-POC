@@ -1,4 +1,4 @@
-# Marina FC website (client demo)
+# CN Football Club website (pitch template, based on the Marina FC demo)
 
 Interactive demo site for Marina Football Club, Chennai: "Grassroots to Competitive".
 Built with Vite, React and TypeScript, using Lenis smooth scrolling, Anime.js, React Bits
