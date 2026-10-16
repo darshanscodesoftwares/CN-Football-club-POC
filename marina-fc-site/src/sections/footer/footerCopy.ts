@@ -1,38 +1,39 @@
+import { CLUB } from '../../club'
+
 /**
- * Footer content (Marina FC), laid out like the reference footer (Reference/image.png).
- * Note: the client's current site lists support@marinafootballclub.com; the approved footer
- * design uses Contact@marinafc.com. Confirm which address should ship.
+ * Footer content: the brand column (tagline, socials), the "Explore" links, the "Get in touch"
+ * card, the club name across the pitch, and the legal bar.
  */
 export const FOOTER_COPY = {
-  tagline: 'Premium football turf spaces for a stronger, healthier community.',
-  followLabel: 'Follow us',
+  tagline: 'A multi-sport academy growing confident players, on and off the pitch.',
   socials: [
     { label: 'Instagram', href: '#', icon: 'instagram' },
     { label: 'YouTube', href: '#', icon: 'youtube' },
     { label: 'Facebook', href: '#', icon: 'facebook' },
   ],
+  navLabel: 'Explore',
   nav: [
     { label: 'Home', href: '#top' },
-    { label: 'About', href: '#about-intro' },
-    { label: 'Turf Locations', href: '#turf-locations' },
+    { label: 'About us', href: '#about-intro' },
     { label: 'Gallery', href: '#gallery' },
-    { label: 'Contact Us', href: '#contact' },
+    { label: 'Our coaches', href: '#coaches' },
+    { label: 'Contact', href: '#contact' },
   ],
-  email: 'Contact@marinafc.com',
-  emailLabel: 'Official enquiries',
-  watermark: 'MARINA FC',
-  places: [
-    { icon: 'pin', name: 'Academy HQ', detail: 'Chennai, Tamil Nadu', href: '#' },
-    { icon: 'phone', name: 'Call', detail: '+91 9176127400', href: 'tel:+919176127400' },
+  contactLabel: 'Get in touch',
+  contact: [
+    { icon: 'mail', label: 'Official enquiries', value: CLUB.email, href: `mailto:${CLUB.email}` },
+    { icon: 'phone', label: 'Call us', value: CLUB.phone, href: `tel:${CLUB.phone.replace(/\s+/g, '')}` },
+    { icon: 'pin', label: 'Academy HQ', value: `${CLUB.city}, ${CLUB.region}`, href: '#' },
   ],
-  copyright: '© 2026 Marina Football Club. All rights reserved.',
-  crafted: 'Crafted by Marina',
+  watermark: CLUB.shortName.toUpperCase(),
+  copyright: `© 2026 ${CLUB.shortName}. All rights reserved.`,
+  crafted: `Crafted by ${CLUB.shortName}`,
   legal: [
     { label: 'Privacy', href: '#' },
     { label: 'Terms', href: '#' },
-    { label: 'Instagram', href: '#' },
   ],
+  backToTop: 'Back to top',
 } as const
 
 export type SocialIcon = (typeof FOOTER_COPY.socials)[number]['icon']
-export type PlaceIcon = (typeof FOOTER_COPY.places)[number]['icon']
+export type ContactIcon = (typeof FOOTER_COPY.contact)[number]['icon']

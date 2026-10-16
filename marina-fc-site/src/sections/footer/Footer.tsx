@@ -2,12 +2,15 @@ import '@fontsource-variable/plus-jakarta-sans'
 import '@fontsource-variable/roboto-flex/opsz.css'
 import { createTimeline, cubicBezier, stagger, utils } from 'animejs'
 import { useEffect, useRef } from 'react'
-import { MarinaCrest } from '../../components/MarinaCrest'
+import type { CSSProperties } from 'react'
+import { ClubCrest } from '../../components/ClubCrest'
+import { CLUB } from '../../club'
 import VariableProximity from '../../components/reactbits/VariableProximity'
 import { prefersReducedMotion } from '../../lib/motion'
+import { usePaperSurface } from '../../lib/paperPattern'
 import { FOOTER_COPY } from './footerCopy'
-import type { PlaceIcon, SocialIcon } from './footerCopy'
-import { ArrowUpRightSmall, FacebookIcon, InstagramIcon, MailIcon, PhoneIcon, PinIcon, YouTubeIcon } from './FooterIcons'
+import type { ContactIcon, SocialIcon } from './footerCopy'
+import { FacebookIcon, InstagramIcon, MailIcon, PhoneIcon, PinIcon, YouTubeIcon } from './FooterIcons'
 import './Footer.css'
 
 const SOCIAL_ICONS: Record<SocialIcon, typeof InstagramIcon> = {
@@ -15,20 +18,22 @@ const SOCIAL_ICONS: Record<SocialIcon, typeof InstagramIcon> = {
   youtube: YouTubeIcon,
   facebook: FacebookIcon,
 }
-const PLACE_ICONS: Record<PlaceIcon, typeof PinIcon> = { pin: PinIcon, phone: PhoneIcon }
+const CONTACT_ICONS: Record<ContactIcon, typeof PinIcon> = { mail: MailIcon, phone: PhoneIcon, pin: PinIcon }
 
 const easeEnter = cubicBezier(0.16, 1, 0.3, 1)
 
 /**
- * Site footer laid out like the reference (Reference/image.png): a band in the site's own paper
- * colour carries the crest, tagline, socials, links and the enquiries email; below it the client's
- * pitch photo is shown whole (original file, natural size), toned down on request with a display
- * filter, with a huge club name that fades out downwards, the academy's location and phone, and
- * the legal bar.
+ * Site footer. On the page's patterned wall: the brand column (crest, name, tagline, socials), the
+ * "Explore" links and a navy "Get in touch" card (email, phone, location) in the kit's lime
+ * accents. Below, the pitch photo whole (original file, natural size, toned down with a display
+ * filter) with a soft lime glow on the centre circle, a huge club name that fades out downwards,
+ * the ink vignette, and the legal bar with a back-to-top button.
  */
 export function Footer() {
   const rootRef = useRef<HTMLElement>(null)
   const wordRef = useRef<HTMLDivElement>(null)
+  const skyRef = useRef<HTMLSpanElement>(null)
+  usePaperSurface(skyRef)
   // VariableProximity measures its letters whenever the mouse moves anywhere on the page. It only
   // gets its container while the footer is near the screen, so nothing runs during the hero scroll.
   const proximityRef = useRef<HTMLElement | null>(null)
@@ -97,113 +102,127 @@ export function Footer() {
     }
   }, [])
 
-  const { tagline, followLabel, socials, nav, email, emailLabel, watermark, places, copyright, crafted, legal } = FOOTER_COPY
+  const { tagline, socials, navLabel, nav, contactLabel, contact, watermark, copyright, crafted, legal, backToTop } = FOOTER_COPY
 
   return (
-    <footer ref={rootRef} className="site-footer" data-reveal="pending">
+    <footer ref={rootRef} className="site-footer" id="contact" data-reveal="pending">
+      <span className="site-footer__beam" aria-hidden="true" />
+
       {/* ------------------------------------------------------ band */}
       <div className="site-footer__band">
-        <div className="site-footer__inner">
-          <div className="site-footer__top">
-            <a className="site-footer__brand" href="#top" data-footer-reveal aria-label="Marina Football Club, back to top">
-              <MarinaCrest className="site-footer__crest" />
-              <span className="site-footer__tagline">{tagline}</span>
+        <div className="site-footer__inner site-footer__grid">
+          <div className="site-footer__brand-col" data-footer-reveal>
+            <a className="site-footer__brand" href="#top" aria-label={`${CLUB.shortName}, back to top`}>
+              <ClubCrest className="site-footer__crest" />
+              <span className="site-footer__name">{CLUB.shortName}</span>
             </a>
-            <div className="site-footer__follow" data-footer-reveal>
-              <p className="site-footer__follow-label">{followLabel}</p>
-              <ul className="site-footer__socials">
-                {socials.map((social) => {
-                  const Icon = SOCIAL_ICONS[social.icon]
-                  return (
-                    <li key={social.label}>
-                      <a className="site-footer__social" href={social.href} aria-label={social.label}>
-                        <Icon />
-                      </a>
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
+            <p className="site-footer__tagline">{tagline}</p>
+            <ul className="site-footer__socials">
+              {socials.map((social) => {
+                const Icon = SOCIAL_ICONS[social.icon]
+                return (
+                  <li key={social.label}>
+                    <a className="site-footer__social" href={social.href} aria-label={social.label}>
+                      <Icon />
+                    </a>
+                  </li>
+                )
+              })}
+            </ul>
           </div>
 
-          <div className="site-footer__row">
-            <nav className="site-footer__nav" aria-label="Footer">
+          <nav className="site-footer__nav" aria-labelledby="footer-nav-title" data-footer-reveal>
+            <p id="footer-nav-title" className="site-footer__heading">
+              {navLabel}
+            </p>
+            <ul className="site-footer__links">
               {nav.map((item) => (
-                <a key={item.label} className="site-footer__link" href={item.href} data-footer-reveal>
-                  {item.label}
-                </a>
+                <li key={item.label}>
+                  <a className="site-footer__link" href={item.href}>
+                    {item.label}
+                  </a>
+                </li>
               ))}
-            </nav>
-            <a className="site-footer__mail" href={`mailto:${email}`} data-footer-reveal>
-              <span className="site-footer__mail-icon">
-                <MailIcon />
-              </span>
-              <span className="site-footer__mail-text">
-                <span className="site-footer__mail-address">{email}</span>
-                <span className="site-footer__mail-label">{emailLabel}</span>
-              </span>
-            </a>
+            </ul>
+          </nav>
+
+          <div className="site-footer__contact" data-footer-reveal>
+            <p className="site-footer__heading site-footer__heading--light">{contactLabel}</p>
+            <ul className="site-footer__contact-list">
+              {contact.map((item) => {
+                const Icon = CONTACT_ICONS[item.icon]
+                return (
+                  <li key={item.label}>
+                    <a className="site-footer__contact-item" href={item.href}>
+                      <span className="site-footer__contact-icon">
+                        <Icon />
+                      </span>
+                      <span className="site-footer__contact-text">
+                        <span className="site-footer__contact-value">{item.value}</span>
+                        <span className="site-footer__contact-label">{item.label}</span>
+                      </span>
+                    </a>
+                  </li>
+                )
+              })}
+            </ul>
           </div>
         </div>
       </div>
 
       {/* --------------------------------------------------- the pitch */}
       <div className="site-footer__field">
-      <div className="site-footer__frame">
-        <img className="site-footer__pitch" src="/media/footer/ground.png" alt="" width={1329} height={480} loading="lazy" decoding="async" />
-        <span className="site-footer__sky" aria-hidden="true" />
-        <span className="site-footer__vignette" aria-hidden="true" />
-        <div ref={wordRef} className="site-footer__word" aria-hidden="true">
-          {/* Letters swell toward the cursor (React Bits VariableProximity on Roboto Flex). */}
-          <VariableProximity
-            label={watermark}
-            fromFontVariationSettings="'wght' 600, 'opsz' 9"
-            toFontVariationSettings="'wght' 1000, 'opsz' 40"
-            containerRef={proximityRef}
-            radius={170}
-            falloff="linear"
-            style={{ fontFamily: "'Roboto Flex Variable', 'Roboto Flex', sans-serif" }}
-          />
+        <div className="site-footer__frame">
+          <img className="site-footer__pitch" src="/media/footer/ground.png" alt="" width={1329} height={480} loading="lazy" decoding="async" />
+          <span ref={skyRef} className="site-footer__sky paper-surface" aria-hidden="true" />
+          <span className="site-footer__glow" aria-hidden="true" />
+          <span className="site-footer__vignette" aria-hidden="true" />
+          <div
+            ref={wordRef}
+            className="site-footer__word"
+            style={{ '--word-chars': watermark.length } as CSSProperties}
+            aria-hidden="true"
+          >
+            {/* Letters swell toward the cursor (React Bits VariableProximity on Roboto Flex). */}
+            <VariableProximity
+              label={watermark}
+              fromFontVariationSettings="'wght' 600, 'opsz' 9"
+              toFontVariationSettings="'wght' 1000, 'opsz' 40"
+              containerRef={proximityRef}
+              radius={170}
+              falloff="linear"
+              style={{ fontFamily: "'Roboto Flex Variable', 'Roboto Flex', sans-serif" }}
+            />
+          </div>
         </div>
-      </div>
 
-      <ul className="site-footer__places">
-        {places.map((place) => {
-          const Icon = PLACE_ICONS[place.icon]
-          return (
-            <li key={place.name} data-footer-reveal>
-              <a className="site-footer__place" href={place.href}>
-                <Icon className="site-footer__place-icon" />
-                <span className="site-footer__place-name">{place.name}</span>
-                <span className="site-footer__place-detail">· {place.detail}</span>
-                <ArrowUpRightSmall className="site-footer__place-arrow" />
+        <div className="site-footer__inner site-footer__bottom">
+          <div className="site-footer__bar" data-footer-reveal>
+            <p className="site-footer__legal">
+              <span>{copyright}</span>
+              <span className="site-footer__sep" aria-hidden="true">
+                ·
+              </span>
+              <span>{crafted}</span>
+            </p>
+            <div className="site-footer__bar-end">
+              <ul className="site-footer__legal site-footer__legal--links">
+                {legal.map((item) => (
+                  <li key={item.label}>
+                    <a className="site-footer__bar-link" href={item.href}>
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <a className="site-footer__top-btn" href="#top" aria-label={backToTop}>
+                <svg viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M8 13V3M4 7l4-4 4 4" />
+                </svg>
               </a>
-            </li>
-          )
-        })}
-      </ul>
-
-      <div className="site-footer__inner site-footer__bottom">
-        <hr className="site-footer__rule" />
-        <div className="site-footer__bar" data-footer-reveal>
-          <p className="site-footer__legal">
-            <span>{copyright}</span>
-            <span className="site-footer__sep" aria-hidden="true">
-              |
-            </span>
-            <span>{crafted}</span>
-          </p>
-          <ul className="site-footer__legal site-footer__legal--links">
-            {legal.map((item) => (
-              <li key={item.label}>
-                <a className="site-footer__bar-link" href={item.href}>
-                  {item.label}
-                </a>
-              </li>
-            ))}
-          </ul>
+            </div>
+          </div>
         </div>
-      </div>
       </div>
     </footer>
   )

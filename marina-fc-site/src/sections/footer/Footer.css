@@ -1,22 +1,22 @@
 /*
- * Footer laid out like the reference (Reference/image.png, 1140 x 575): positions and sizes are
- * reference px / 1140 in vw. Colours are the site's own tokens only (paper, ink, gold, white).
- * The pitch photo is the client's original file at its natural aspect ratio, never cropped or
- * zoomed. At the user's request it is shown duller than the original (a display filter only; the
- * file is unchanged), tuned with the two --pitch-* values below.
+ * Footer. The band sits on the page's patterned wall: a brand column, the "Explore" links and a navy
+ * "Get in touch" card, accented in the kit's lime like the About section. Below, the pitch photo at
+ * its natural aspect ratio (never cropped or zoomed), shown duller than the original (a display
+ * filter only; tuned with the two --pitch-* values below), with a soft lime glow on the centre
+ * circle, the club name across it, the ink vignette and the legal bar.
  */
 .site-footer {
   --footer-font: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', var(--font-text);
-  --footer-gold: #c8a96b; /* site gold (skip / switch icons) */
   --footer-rule: rgb(11 31 58 / 0.12);
-  --footer-side: 5.13vw; /* the reference's centred 1023 px column */
-  --band-h: 18.86vw; /* 215 */
+  --footer-side: 5.13vw;
+  --lime: #c6f02f;
+  --lime-soft: rgb(198 240 47 / 0.16);
+  --lime-ink: #557300;
   /* How much the pitch photo is toned down: 1 = as supplied. */
   --pitch-saturate: 0.66;
   --pitch-brightness: 0.82;
 
   position: relative;
-  background: var(--paper);
   color: var(--ink);
   font-family: var(--footer-font);
 }
@@ -30,169 +30,227 @@
   padding: 0 var(--footer-side);
 }
 
+/* A thin lime beam across the top edge, brightest in the middle. */
+.site-footer__beam {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(70%, 1100px);
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--lime) 50%, transparent);
+  transform: translateX(-50%);
+  opacity: 0.85;
+}
+
 /* ---------------------------------------------------------------- band */
 
 .site-footer__band {
   position: relative;
-  height: var(--band-h);
-  background: var(--paper);
+  padding: clamp(48px, 5.2vw, 100px) 0 clamp(36px, 3.6vw, 68px);
 }
 
-.site-footer__top {
-  position: relative;
-  height: 10.44vw; /* down to the first rule at 119 */
-  border-bottom: 1px solid var(--footer-rule);
+.site-footer__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.7fr) minmax(0, 1.05fr);
+  gap: clamp(28px, 4.4vw, 90px);
+  align-items: start;
 }
 
 .site-footer__brand {
-  position: absolute;
-  top: 1.75vw; /* crest top 20 */
-  left: 0.44vw; /* crest at 50 */
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 2.28vw; /* 26 */
+  gap: clamp(12px, 1.1vw, 20px);
 }
 
 .site-footer__crest {
   width: auto;
-  height: 3.68vw; /* 42 */
+  height: clamp(44px, 3.6vw, 64px);
+}
+
+.site-footer__name {
+  font-family: var(--font-brand);
+  font-size: clamp(1.25rem, 1.75vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .site-footer__tagline {
-  font-size: 1.05vw; /* 12 */
-  font-weight: 500;
-  color: var(--ink);
-}
-
-.site-footer__follow {
-  position: absolute;
-  top: 2.1vw;
-  right: 0;
-  display: grid;
-  justify-items: start;
-  gap: 0.8vw;
-}
-
-.site-footer__follow-label {
-  font-size: 0.75vw; /* 8.5 */
-  font-weight: 600;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
+  max-width: 24em;
+  margin-top: clamp(14px, 1.3vw, 24px);
+  font-size: clamp(0.92rem, 1vw, 1.2rem);
+  font-weight: 400;
+  line-height: 1.6;
+  color: rgb(11 31 58 / 0.72);
 }
 
 .site-footer__socials {
   display: flex;
-  gap: 1.32vw;
+  gap: 10px;
+  padding: 0;
+  margin: clamp(18px, 1.6vw, 30px) 0 0;
+  list-style: none;
+}
+
+/* Round chips that fill with lime on hover. */
+.site-footer__social {
+  display: grid;
+  place-items: center;
+  width: clamp(38px, 2.7vw, 48px);
+  height: clamp(38px, 2.7vw, 48px);
+  border: 1px solid rgb(11 31 58 / 0.14);
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.5);
+  color: var(--ink);
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    transform 0.4s var(--ease-out);
+}
+
+.site-footer__social svg {
+  width: 42%;
+  height: 42%;
+}
+
+.site-footer__social:hover,
+.site-footer__social:focus-visible {
+  border-color: var(--lime);
+  background: var(--lime);
+  transform: translateY(-3px);
+}
+
+.site-footer__heading {
+  margin-bottom: clamp(14px, 1.3vw, 24px);
+  font-family: var(--font-brand);
+  font-size: clamp(10px, 0.72vw, 12px);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--lime-ink);
+}
+
+.site-footer__heading--light {
+  color: var(--lime);
+}
+
+.site-footer__links {
+  display: grid;
+  gap: clamp(10px, 0.85vw, 16px);
   padding: 0;
   margin: 0;
   list-style: none;
 }
 
-.site-footer__social {
-  display: block;
-  width: 1.32vw; /* 15 */
-  height: 1.32vw;
-  color: var(--ink);
-  transition:
-    color 0.3s ease,
-    transform 0.4s var(--ease-out);
-}
-
-.site-footer__social svg {
-  width: 100%;
-  height: 100%;
-}
-
-.site-footer__social:hover,
-.site-footer__social:focus-visible {
-  color: var(--footer-gold);
-  transform: translateY(-2px);
-}
-
-.site-footer__row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 7.02vw; /* between the rules at 119 and 199 */
-  border-bottom: 1px solid var(--footer-rule);
-}
-
-.site-footer__nav {
-  display: flex;
-  gap: 2.8vw; /* 32 */
-  padding-left: 1.62vw; /* Home at 77 */
-}
-
+/* A lime dot slides in ahead of the hovered link. */
 .site-footer__link {
   position: relative;
-  font-size: 1vw; /* 11.5 */
+  display: inline-flex;
+  align-items: center;
+  font-size: clamp(0.95rem, 1.02vw, 1.2rem);
   font-weight: 600;
   color: var(--ink);
+  transition:
+    transform 0.45s var(--ease-out),
+    color 0.3s ease;
 }
 
-.site-footer__link::after {
+.site-footer__link::before {
   content: '';
   position: absolute;
-  right: 0;
-  bottom: -0.3em;
-  left: 0;
-  height: 1px;
-  background: currentColor;
-  transform: scaleX(0);
-  transform-origin: right center;
-  transition: transform 0.5s var(--ease-out);
+  left: -14px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--lime);
+  box-shadow: 0 0 0 3px var(--lime-soft);
+  opacity: 0;
+  transform: scale(0.4);
+  transition:
+    opacity 0.3s ease,
+    transform 0.45s var(--ease-out);
 }
 
-.site-footer__link:hover::after,
-.site-footer__link:focus-visible::after {
-  transform: scaleX(1);
-  transform-origin: left center;
+.site-footer__link:hover,
+.site-footer__link:focus-visible {
+  transform: translateX(14px);
 }
 
-.site-footer__mail {
+.site-footer__link:hover::before,
+.site-footer__link:focus-visible::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Navy card with a lime glow in its corner, like the About stats band. */
+.site-footer__contact {
+  padding: clamp(22px, 2vw, 38px);
+  border-radius: clamp(18px, 1.5vw, 28px);
+  background:
+    radial-gradient(110% 120% at 100% 0%, rgb(198 240 47 / 0.18), transparent 50%),
+    var(--ink);
+  box-shadow: 0 24px 50px rgb(11 31 58 / 0.2);
+  color: #ffffff;
+}
+
+.site-footer__contact-list {
+  display: grid;
+  gap: clamp(14px, 1.2vw, 22px);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.site-footer__contact-item {
   display: flex;
   align-items: center;
-  gap: 0.96vw; /* 11 */
+  gap: clamp(12px, 1vw, 18px);
+  min-width: 0;
 }
 
-.site-footer__mail-icon {
+.site-footer__contact-icon {
   display: grid;
+  flex: none;
   place-items: center;
-  width: 2.1vw; /* 24 */
-  height: 2.1vw;
+  width: clamp(38px, 2.7vw, 48px);
+  height: clamp(38px, 2.7vw, 48px);
   border-radius: 50%;
-  background: rgb(200 169 107 / 0.18); /* site gold, lightly */
-  color: var(--footer-gold);
-  transition: background-color 0.3s ease;
+  background: var(--lime-soft);
+  color: var(--lime);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
-.site-footer__mail-icon svg {
-  width: 52%;
-  height: 52%;
+.site-footer__contact-icon svg {
+  width: 44%;
+  height: 44%;
 }
 
-.site-footer__mail:hover .site-footer__mail-icon {
-  background: rgb(200 169 107 / 0.3);
-}
-
-.site-footer__mail-text {
-  display: grid;
-  gap: 0.15vw;
-}
-
-.site-footer__mail-address {
-  font-size: 1vw;
-  font-weight: 600;
+.site-footer__contact-item:hover .site-footer__contact-icon,
+.site-footer__contact-item:focus-visible .site-footer__contact-icon {
+  background: var(--lime);
   color: var(--ink);
 }
 
-.site-footer__mail-label {
-  font-size: 0.66vw; /* 7.5 */
+.site-footer__contact-text {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.site-footer__contact-value {
+  overflow-wrap: anywhere;
+  font-size: clamp(0.95rem, 1.02vw, 1.2rem);
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.site-footer__contact-label {
+  font-size: clamp(9.5px, 0.66vw, 11px);
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--footer-gold);
+  color: rgb(255 255 255 / 0.6);
 }
 
 /* ------------------------------------------------------------- the pitch */
@@ -215,15 +273,24 @@
   filter: saturate(var(--pitch-saturate)) brightness(var(--pitch-brightness));
 }
 
-/* Keeps the sky exactly the band's paper colour while the rest of the photo is toned down: a
-   paper layer masked to the photo's sky only (built from the image by npm run matte:footer), so
-   the floodlights, fence, goal and pitch show through. */
+/* Keeps the sky exactly the page's colour (and pattern) while the rest of the photo is toned
+   down: a page layer masked to the photo's sky only (built from the image by npm run
+   matte:footer), so the floodlights, fence, goal and pitch show through. */
 .site-footer__sky {
   position: absolute;
   inset: 0;
-  background: var(--paper);
   -webkit-mask: url('/media/footer/ground-sky.png') center / 100% 100% no-repeat;
   mask: url('/media/footer/ground-sky.png') center / 100% 100% no-repeat;
+  pointer-events: none;
+}
+
+/* A soft lime light pooled on the centre circle, as if the floodlights were on. */
+.site-footer__glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(42% 40% at 50% 64%, rgb(214 255 90 / 0.95), rgb(198 240 47 / 0.35) 50%, transparent 100%);
+  mix-blend-mode: soft-light;
   pointer-events: none;
 }
 
@@ -236,18 +303,20 @@
   pointer-events: none;
 }
 
-/* Huge club name in translucent white that fades away towards its base. */
+/* Huge club name in translucent white with a lime halo, fading away towards its base. */
 .site-footer__word {
   position: absolute;
   z-index: 1;
   top: 21.2vw; /* on the pitch, just below the goal line */
   left: 50%;
   padding-left: 0.06em; /* balances the trailing letter-spacing so the word centres */
-  font-size: 12vw;
+  /* 12vw fits a 9-letter name; longer names shrink to the same overall width. */
+  font-size: min(12vw, 108vw / var(--word-chars, 9));
   font-weight: 800;
   line-height: 1;
   letter-spacing: 0.06em;
-  color: rgb(255 255 255 / 0.55);
+  color: rgb(255 255 255 / 0.6);
+  text-shadow: 0 0 0.35em rgb(198 240 47 / 0.35);
   white-space: nowrap;
   transform: translate(-50%, -50%);
   -webkit-mask-image: linear-gradient(180deg, #000 18%, rgb(0 0 0 / 0.55) 55%, transparent 92%);
@@ -257,102 +326,50 @@
 }
 
 /* Text on the photo carries its own soft shadow for legibility; the photo itself is untouched. */
-.site-footer__places,
 .site-footer__bar {
   text-shadow: 0 1px 6px rgb(0 0 0 / 0.45);
 }
 
-.site-footer__places {
-  position: absolute;
-  top: 27.2vw;
-  left: 50%;
-  display: flex;
-  gap: 4.4vw; /* 50 */
-  padding: 0;
-  margin: 0;
-  list-style: none;
-  color: #ffffff;
-  white-space: nowrap;
-  transform: translate(-50%, -50%);
-}
-
-.site-footer__place {
-  display: flex;
-  align-items: center;
-  gap: 0.45vw;
-  font-size: 1vw; /* 11.5 */
-}
-
-.site-footer__place-icon {
-  width: 0.96vw;
-  height: 0.96vw;
-  margin-right: 0.15vw;
-  filter: drop-shadow(0 1px 3px rgb(0 0 0 / 0.45));
-}
-
-.site-footer__place-name {
-  font-weight: 700;
-}
-
-.site-footer__place-detail {
-  color: rgb(255 255 255 / 0.9);
-}
-
-.site-footer__place-arrow {
-  width: 0.7vw;
-  height: 0.7vw;
-  margin-left: 0.35vw;
-  transition:
-    transform 0.4s var(--ease-out),
-    color 0.3s ease;
-}
-
-.site-footer__place:hover .site-footer__place-arrow,
-.site-footer__place:focus-visible .site-footer__place-arrow {
-  color: var(--footer-gold);
-  transform: translate(2px, -2px);
-}
-
 .site-footer__bottom {
   position: absolute;
-  top: 29vw;
+  top: 28.2vw;
   right: 0;
   left: 0;
-}
-
-.site-footer__rule {
-  height: 0;
-  margin: 0;
-  border: 0;
-  border-top: 1px solid rgb(255 255 255 / 0.35);
 }
 
 .site-footer__bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 1.8vw; /* well clear of the photo's touchline */
+  padding-top: clamp(14px, 1.3vw, 24px);
+  border-top: 1px solid rgb(255 255 255 / 0.28);
   color: #ffffff;
-  transform: translateY(-50%);
+}
+
+.site-footer__bar-end {
+  display: flex;
+  align-items: center;
+  gap: clamp(18px, 2vw, 36px);
 }
 
 .site-footer__legal {
   display: flex;
   align-items: center;
-  gap: 2.28vw; /* 26 */
+  gap: clamp(18px, 2vw, 34px);
   padding: 0;
   margin: 0;
   list-style: none;
-  font-size: 0.75vw; /* 8.5 */
+  font-size: clamp(11px, 0.8vw, 14px);
   color: rgb(255 255 255 / 0.85);
 }
 
-.site-footer__legal:first-child {
+.site-footer__legal:not(.site-footer__legal--links) {
   gap: 0;
 }
 
 .site-footer__sep {
-  margin: 0 0.6vw;
+  margin: 0 0.7em;
+  color: var(--lime);
 }
 
 .site-footer__bar-link {
@@ -361,91 +378,53 @@
 
 .site-footer__bar-link:hover,
 .site-footer__bar-link:focus-visible {
-  color: #ffffff;
+  color: var(--lime);
+}
+
+/* Lime round button that lifts on hover. */
+.site-footer__top-btn {
+  display: grid;
+  place-items: center;
+  width: clamp(38px, 2.7vw, 48px);
+  height: clamp(38px, 2.7vw, 48px);
+  border-radius: 50%;
+  background: var(--lime);
+  color: var(--ink);
+  box-shadow: 0 8px 22px rgb(0 0 0 / 0.3);
+  transition: transform 0.4s var(--ease-out);
+}
+
+.site-footer__top-btn svg {
+  width: 42%;
+  height: 42%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.site-footer__top-btn:hover,
+.site-footer__top-btn:focus-visible {
+  transform: translateY(-4px);
 }
 
 /* ------------------------------------------------- tablets and phones: stacked */
 
-/* The photo stays whole at its natural size, so on narrow screens the location row sits above
-   it and the legal bar below it, on the paper, in ink. */
+/* The photo stays whole at its natural size, so on narrow screens the legal bar sits below it,
+   on the page, in ink. */
 @media (max-width: 899px) {
   .site-footer {
     --footer-side: var(--edge);
-    --band-h: auto;
   }
 
-  .site-footer__top {
-    display: grid;
-    gap: 18px;
-    height: auto;
-    padding: 28px 0 22px;
+  .site-footer__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
   }
 
-  .site-footer__brand,
-  .site-footer__follow {
-    position: static;
-  }
-
-  .site-footer__brand {
-    gap: 16px;
-  }
-
-  .site-footer__crest {
-    height: 48px;
-  }
-
-  .site-footer__tagline {
-    font-size: 14px;
-    line-height: 1.4;
-  }
-
-  .site-footer__follow {
-    gap: 10px;
-  }
-
-  .site-footer__follow-label {
-    font-size: 10px;
-  }
-
-  .site-footer__social {
-    width: 20px;
-    height: 20px;
-  }
-
-  .site-footer__socials {
-    gap: 18px;
-  }
-
-  .site-footer__row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 18px;
-    height: auto;
-    padding: 20px 0 22px;
-  }
-
-  .site-footer__nav {
-    flex-wrap: wrap;
-    gap: 12px 22px;
-    padding-left: 0;
-  }
-
-  .site-footer__link,
-  .site-footer__mail-address {
-    font-size: 14px;
-  }
-
-  .site-footer__mail {
-    gap: 12px;
-  }
-
-  .site-footer__mail-icon {
-    width: 32px;
-    height: 32px;
-  }
-
-  .site-footer__mail-label {
-    font-size: 9.5px;
+  .site-footer__links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .site-footer__field {
@@ -453,66 +432,29 @@
     flex-direction: column;
   }
 
-  .site-footer__places {
-    position: static;
-    order: 1;
-    flex-direction: column;
-    gap: 12px;
-    padding: 22px var(--edge) 24px;
-    color: var(--ink);
-    white-space: normal;
-    text-shadow: none;
-    transform: none;
-  }
-
-  .site-footer__place {
-    flex-wrap: wrap;
-    gap: 6px;
-    font-size: 14px;
-  }
-
-  .site-footer__place-icon {
-    width: 15px;
-    height: 15px;
-    filter: none;
-  }
-
-  .site-footer__place-detail {
-    color: var(--ink-soft);
-  }
-
-  .site-footer__place-arrow {
-    width: 11px;
-    height: 11px;
-  }
-
-  .site-footer__frame {
-    order: 2;
-  }
-
   .site-footer__word {
     top: 72%;
-    font-size: 13vw;
+    font-size: min(13vw, 117vw / var(--word-chars, 9));
   }
 
   .site-footer__bottom {
     position: static;
-    order: 3;
     padding: 0 var(--edge) 26px;
-  }
-
-  .site-footer__rule {
-    border-top-color: var(--footer-rule);
   }
 
   .site-footer__bar {
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: 14px;
     margin-top: 18px;
+    border-top-color: var(--footer-rule);
     color: var(--ink);
     text-shadow: none;
-    transform: none;
+  }
+
+  .site-footer__bar-end {
+    justify-content: space-between;
+    width: 100%;
   }
 
   .site-footer__legal {
@@ -522,7 +464,18 @@
     color: var(--ink-soft);
   }
 
+  /* Copyright and credit wrap onto their own lines; the separator would dangle. */
+  .site-footer__legal:not(.site-footer__legal--links) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .site-footer__sep {
+    display: none;
+  }
+
   .site-footer__bar-link:hover {
-    color: var(--ink);
+    color: var(--lime-ink);
   }
 }
