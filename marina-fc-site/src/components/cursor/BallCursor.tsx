@@ -15,7 +15,7 @@ const pixelRatio = () => Math.min(window.devicePixelRatio || 1, 2)
 
 /**
  * The site cursor: a small 3D football (three.js) in the style of the 2026 World Cup ball with the
- * Marina FC crest, centred on the pointer. Each click spins it one full turn. Only on devices with
+ * club crest, centred on the pointer. Each click spins it one full turn. Only on devices with
  * a precise hovering pointer; touch screens keep their normal behaviour. Three.js loads in its own
  * chunk once the browser is idle, and the normal cursor stays until the ball is ready.
  */

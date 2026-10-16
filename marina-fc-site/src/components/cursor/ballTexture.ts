@@ -1,7 +1,7 @@
 /**
  * Paints the cursor ball's surface as an equirectangular map (2:1) for a three.js sphere, in the
  * style of the 2026 World Cup ball the client referenced: white, with red, blue and green swirl
- * panels and maroon/navy pinstripes. The Marina FC crest sits on the blue panel where that ball
+ * panels and maroon/navy pinstripes. The club crest sits on the blue panel where that ball
  * carries its tournament emblem, and the club name sits on the green panel. No third-party marks
  * (FIFA, adidas, ball name) are reproduced.
  *
@@ -9,6 +9,7 @@
  * viewer's right, y = 0 is the north pole. Positions below are written as [longitude, latitude]
  * in degrees, with longitude 0 facing the viewer.
  */
+import { CLUB } from '../../club'
 import { CREST_SVG } from './crestArt'
 
 export const TEX_W = 1024
@@ -282,7 +283,7 @@ async function renderCrest() {
   return c
 }
 
-/** "MARINA FC" in white for the green panel. */
+/** The club's short name in white for the green panel. */
 async function renderName() {
   const size = Math.round(40 * K)
   const font = `800 ${size}px "Sora Variable", "Inter Tight Variable", system-ui, sans-serif`
@@ -294,7 +295,7 @@ async function renderName() {
   const probe = document.createElement('canvas').getContext('2d')
   if (!probe) throw new Error('2D canvas unavailable')
   probe.font = font
-  const label = 'MARINA FC'
+  const label = CLUB.shortName.toUpperCase()
   const spacing = size * 0.08
   const width = Math.ceil(probe.measureText(label).width + spacing * label.length + size)
   const c = document.createElement('canvas')

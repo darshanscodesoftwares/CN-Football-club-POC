@@ -19,8 +19,10 @@ export const BRAND_HIDE_AFTER_PX = 80
 /** Share of each caption's range spent fading in (and out). */
 export const CAPTION_FADE = 0.16
 
+import { CLUB } from '../../club'
+
 export const HERO_COPY = {
-  brand: 'MARINA FC',
+  brand: CLUB.wordmark,
   titleLines: ['From Grassroots', 'to Competitive.'],
   lede: 'A professional football ecosystem for young players, with AIFF/AFC-standard coaching, all-weather training and clear competitive pathways.',
   cta: 'Join our club today',
@@ -44,7 +46,7 @@ export const CAPTION_COPY = {
     body: 'AIFF/AFC licensed coaches, weekly competitive fixtures and scout showcase matches.',
   },
   welcome: {
-    heading: 'Welcome to Marina Football Club',
+    heading: `Welcome to ${CLUB.name}`,
     body: 'Growing players with technical ability, character and the confidence to compete at every stage.',
   },
 } as const

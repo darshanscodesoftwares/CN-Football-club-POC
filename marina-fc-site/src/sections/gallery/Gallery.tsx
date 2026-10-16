@@ -31,7 +31,7 @@ function Chevron({ direction }: { direction: 'left' | 'right' }) {
 }
 
 /**
- * "Life at Marina FC" photo collage (reference: "Life at Neidhal FC"): a thumbnail rail on the
+ * "Life at <club>" photo collage (reference: "Life at Neidhal FC"): a thumbnail rail on the
  * left and a large viewer that alternates a single wide photo with a 3-panel hover accordion
  * (React Bits AccordionGallery), looping. A new slide wipes in from the direction of travel while
  * its photos settle from a slight zoom; the old one fades back.

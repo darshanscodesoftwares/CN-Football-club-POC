@@ -3,7 +3,8 @@ import type { AnimationParams, TextSplitter, Timeline } from 'animejs'
 import { useEffect, useRef, useState } from 'react'
 import type { CSSProperties, MouseEvent } from 'react'
 import { ArrowUpRight, SkipIcon, SwitchIcon } from '../../components/icons'
-import { MarinaCrest } from '../../components/MarinaCrest'
+import { ClubCrest } from '../../components/ClubCrest'
+import { CLUB } from '../../club'
 import { clamp, damp, invLerp, piecewise, progressIn, smoothstep } from '../../lib/math'
 import { hasFinePointer, prefersReducedMotion } from '../../lib/motion'
 import { currentScroll, scrollToTarget } from '../../lib/smoothScroll'
@@ -544,7 +545,7 @@ export function Hero() {
       ref={sectionRef}
       className="hero"
       id="top"
-      aria-label="Marina Football Club"
+      aria-label={CLUB.name}
       data-intro="pending"
       data-footage={initialVideo.footage}
       style={{ height: `${HERO_LENGTH_VH}vh` }}
@@ -567,9 +568,9 @@ export function Hero() {
         </div>
 
         <div className="hero__overlay">
-          <a ref={brandRef} className="hero__brand" href="#top" onClick={backToTop} aria-label="Marina Football Club, back to top">
+          <a ref={brandRef} className="hero__brand" href="#top" onClick={backToTop} aria-label={`${CLUB.name}, back to top`}>
             <span ref={brandInnerRef} className="hero__brand-inner" data-reveal>
-              <MarinaCrest className="hero__crest" />
+              <ClubCrest className="hero__crest" />
               <span className="hero__brand-name">{HERO_COPY.brand}</span>
             </span>
           </a>
