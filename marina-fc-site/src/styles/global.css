@@ -22,6 +22,10 @@
   --ink: #0b1f3a;
   --ink-soft: rgb(11 31 58 / 0.9);
   --paper: #faf7f2; /* reference section background */
+  /* Faint football-panel web over the page colour, like seams painted on a wall
+     (scripts/build-ball-pattern.py draws it and sets its strength). */
+  --paper-pattern: url('/media/pattern/football-web.svg');
+  --paper-pattern-size: 1008px 864px;
   --brand-blue: #1f4fbf;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 
@@ -75,7 +79,8 @@ html {
 body {
   min-height: 100vh;
   overflow-x: clip;
-  background: var(--paper);
+  /* Sections are transparent, so this one pattern runs behind the whole page. */
+  background: var(--paper) var(--paper-pattern) 0 0 / var(--paper-pattern-size) repeat;
   color: var(--ink);
   font-family: var(--font-text);
   -webkit-font-smoothing: antialiased;
@@ -107,4 +112,13 @@ button {
 :focus-visible {
   outline: 2px solid var(--brand-blue);
   outline-offset: 3px;
+}
+
+/* The page colour plus the page's pattern, for layers painted over photos (mattes, veils, fades).
+   lib/paperPattern.ts sets the offset that lines the pattern up with the page's own. */
+.paper-surface {
+  background-color: var(--paper);
+  background-image: var(--paper-pattern);
+  background-size: var(--paper-pattern-size);
+  background-position: var(--paper-x, 0) var(--paper-y, 0);
 }

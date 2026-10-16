@@ -1,5 +1,5 @@
 /*
- * "Life at Marina FC" collage. Sizes are measured from the reference screenshot (1366 px wide)
+ * "Life at <club>" collage. Sizes are measured from the reference screenshot (1366 px wide)
  * and expressed in vw, so the layout keeps the screenshot's proportions at any desktop width:
  * a 68 px thumbnail rail, a 1018 x 478 px viewer, 10 px corners, an 8 px gap between paired photos.
  */
@@ -16,7 +16,6 @@
   --chrome-inset: clamp(12px, 1.3vw, 24px);
 
   padding: clamp(24px, 2.5vw, 48px) var(--edge) clamp(64px, 7vw, 140px);
-  background: var(--paper);
   color: var(--ink);
 }
 
