@@ -1,47 +1,98 @@
 #!/usr/bin/env python3
 """
-Prepares the "Our coaches" section from the client's files in Reference/coaches:
-the team portrait, one transparent cutout per person and their content cards.
+Prepares the "Our coaches" section from the photos in ../replace-image: the group portrait and one
+full-length photo per person, each shot on a plain light-grey background.
 
-1. Aligns each cutout to its person in the portrait (SIFT features + RANSAC similarity
+1. Cuts each person out of their photo: the flat grey background connected to the edges becomes
+   transparent, and so do enclosed gaps (between an arm and the body) whose core is the backdrop
+   grey almost exactly. White kit (gloves, shoes, the ball's panels) is never that flat, so it
+   stays. Along the outline, pixels close to the backdrop grey, and the light glow the photos
+   have around each person, fade out, so no light fringe.
+2. Aligns each cutout to its person in the portrait (SIFT features + RANSAC similarity
    transform: scale, rotation, position), so the cutout can sit exactly over them.
-2. Builds the hover outlines from the aligned silhouettes. Where people overlap, the one standing
-   in front wins (measured: Masthan is in front of Mohan, Vijay in front of Sathish). Along the
-   Masthan/Vijay strip it alternates (his arm is in front, Vijay's shirt beside it), so there each
-   pixel goes to whichever cutout matches the portrait better, smoothed into clean shapes.
-3. Trims the cutouts' transparent margins (no visible change) and saves web copies:
+3. Builds the hover outlines from the aligned silhouettes. Where two people overlap, each pixel
+   goes to whichever cutout matches the portrait better (that is the one standing in front),
+   smoothed into clean shapes.
+4. Trims the cutouts' transparent margins (no visible change) and saves web copies:
    portrait as full-colour JPEG, cutouts as WebP with alpha. The originals are only read.
-4. Writes src/sections/team/teamLayout.json for the component.
+5. Writes src/sections/team/teamLayout.json for the component.
 
 Needs numpy + opencv-python-headless (e.g. python3 -m venv .venv && .venv/bin/pip install
 numpy opencv-python-headless), plus ffmpeg-static from node_modules. Run from the project root:
-  .venv/bin/python scripts/build-team.py
+  .venv/bin/python scripts/build-team.py [--preview <dir>]
+--preview also writes each cutout composited on magenta, to check the background removal.
 """
 import json, os, subprocess, sys, tempfile
 import cv2
 import numpy as np
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SRC = os.path.join(ROOT, '..', 'Reference(can_refer_for_design)', 'coaches')
+SRC = os.path.join(ROOT, '..', 'replace-image')
 OUT_MEDIA = os.path.join(ROOT, 'public', 'media', 'team')
 OUT_JSON = os.path.join(ROOT, 'src', 'sections', 'team', 'teamLayout.json')
 FFMPEG = os.path.join(ROOT, 'node_modules', 'ffmpeg-static', 'ffmpeg')
 
-PORTRAIT = 'Marina FC Team Portrait.png'
-BACK_TO_FRONT = ['mohan', 'sathish', 'vijay', 'masthan']
+PORTRAIT = 'group-image.jpeg'
 PEOPLE = [  # left to right in the portrait
-    ('mohan', 'Mohan/P-4.png'),
-    ('masthan', 'Masthan Maharaj/P-3.png'),
-    ('vijay', 'Vijay/P-2.png'),
-    ('sathish', 'Sathish/P_1.png'),
+    ('karthik', 'cricket-guy.jpeg'),
+    ('senthil', 'white-football-guy.jpeg'),
+    ('harish', 'shuttle-guy.jpeg'),
+    ('vishal', 'football-guy.jpeg'),
 ]
+# Background removal: how far (per channel) a pixel may sit from the backdrop grey and still count
+# as backdrop; an enclosed gap needs at least GAP_CORE pixels within GAP_TOLERANCE of it.
+BG_TOLERANCE = 3
+GAP_TOLERANCE = 1
+GAP_CORE = 300
+# Within this many px of the backdrop, alpha follows the distance from the backdrop grey, and
+# the photos' light glow around each person (brighter than the backdrop, no colour) is dropped.
+EDGE_BAND = 5
+EDGE_RAMP = 40
+GLOW_CHROMA = 14
 
 
 def run(args):
     subprocess.run(args, check=True)
 
 
+def cut_out(img):
+    """BGRA cutout of a person photographed on a flat backdrop."""
+    h, w = img.shape[:2]
+    border = np.concatenate([img[:4].reshape(-1, 3), img[-4:].reshape(-1, 3), img[:, :4].reshape(-1, 3), img[:, -4:].reshape(-1, 3)])
+    backdrop = np.median(border, axis=0)
+    dist = np.abs(img.astype(int) - backdrop).max(axis=2)
+    near = (dist <= BG_TOLERANCE).astype(np.uint8)
+    n, labels, stats, _ = cv2.connectedComponentsWithStats(near, connectivity=4)
+    bg = np.zeros((h, w), bool)
+    core = dist <= GAP_TOLERANCE
+    for i in range(1, n):
+        x, y, cw, ch, area = stats[i]
+        piece = labels == i
+        if x == 0 or y == 0 or x + cw == w or y + ch == h or (core & piece).sum() >= GAP_CORE:
+            bg |= piece
+    fg = (~bg).astype(np.uint8)
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+    fg = cv2.morphologyEx(fg, cv2.MORPH_OPEN, kernel)
+    # keep the person (largest piece) and anything sizeable attached to it, drop stray specks
+    n, labels, stats, _ = cv2.connectedComponentsWithStats(fg, connectivity=8)
+    keep = np.zeros_like(fg)
+    for i in range(1, n):
+        if stats[i, cv2.CC_STAT_AREA] >= 400:
+            keep[labels == i] = 1
+    # soft 1px edge so the outline is not jagged
+    alpha = cv2.GaussianBlur(keep.astype(np.float32), (0, 0), 0.7)
+    # near the backdrop, light rim pixels (the backdrop blended into the edge) fade out
+    band = cv2.dilate((keep == 0).astype(np.uint8), kernel, iterations=EDGE_BAND) > 0
+    px = img.astype(int)
+    glow = (px.min(axis=2) >= backdrop.min() - BG_TOLERANCE) & (px.max(axis=2) - px.min(axis=2) <= GLOW_CHROMA)
+    edge_dist = np.where(glow, 0, dist)
+    alpha[band] *= np.clip((edge_dist[band] - BG_TOLERANCE) / EDGE_RAMP, 0, 1)
+    alpha = np.clip(alpha * 255, 0, 255).astype(np.uint8)
+    return np.dstack([img, alpha]), backdrop
+
+
 def align(base_gray, cut):
+    cv2.setRNGSeed(0)  # RANSAC is random; a fixed seed keeps reruns identical
     sift = cv2.SIFT_create(nfeatures=20000)
     kb, db = sift.detectAndCompute(base_gray, None)
     gray = cv2.cvtColor(cut[:, :, :3], cv2.COLOR_BGR2GRAY)
@@ -64,6 +115,7 @@ def polygon_from_mask(mask, W, H, eps=1.6):
 
 
 def main():
+    preview = sys.argv[sys.argv.index('--preview') + 1] if '--preview' in sys.argv else None
     os.makedirs(OUT_MEDIA, exist_ok=True)
     base = cv2.imread(os.path.join(SRC, PORTRAIT), cv2.IMREAD_COLOR)
     H, W = base.shape[:2]
@@ -74,7 +126,11 @@ def main():
     warped_alpha, diff = {}, {}
     tmp = tempfile.mkdtemp()
     for pid, rel in PEOPLE:
-        cut = cv2.imread(os.path.join(SRC, rel), cv2.IMREAD_UNCHANGED)
+        cut, backdrop = cut_out(cv2.imread(os.path.join(SRC, rel), cv2.IMREAD_COLOR))
+        if preview:
+            os.makedirs(preview, exist_ok=True)
+            a = cut[:, :, 3:].astype(np.float32) / 255
+            cv2.imwrite(os.path.join(preview, f'{pid}.jpg'), (cut[:, :, :3] * a + np.array([255, 0, 255]) * (1 - a)).astype(np.uint8))
         M, n_in, err = align(base_gray, cut)
         s = float(np.hypot(M[0, 0], M[1, 0]))
         angle = float(np.degrees(np.arctan2(M[1, 0], M[0, 0])))
@@ -99,18 +155,14 @@ def main():
                 'width': round(s * tw / W * 100, 3), 'rotate': round(angle, 3),
             },
         }
-        print(f'{pid:8s} scale {s:.4f} rotate {angle:+.3f} at ({px:.1f}, {py:.1f}) inliers {n_in} reprojection {err:.2f}px trimmed {tw}x{th}')
+        print(f'{pid:8s} backdrop {backdrop} scale {s:.4f} rotate {angle:+.3f} at ({px:.1f}, {py:.1f}) inliers {n_in} reprojection {err:.2f}px trimmed {tw}x{th}')
 
-    # ownership: back-to-front painting, then the mixed Masthan/Vijay strip by smoothed best match
+    # ownership: each pixel goes to the covering cutout that matches the portrait best (smoothed)
     ids = [p for p, _ in PEOPLE]
-    solid = {p: warped_alpha[p] > 128 for p in ids}
-    owner = np.full((H, W), -1, np.int8)
-    for p in BACK_TO_FRONT:
-        owner[solid[p]] = ids.index(p)
-    strip = solid['masthan'] & solid['vijay']
-    lead = cv2.blur((diff['masthan'] - diff['vijay']).astype(np.float32), (31, 31))
-    owner[strip & (lead > 0)] = ids.index('vijay')
-    owner[strip & (lead <= 0)] = ids.index('masthan')
+    solid = np.stack([warped_alpha[p] > 128 for p in ids])
+    cost = np.stack([cv2.blur(diff[p].astype(np.float32), (31, 31)) for p in ids])
+    cost[~solid] = np.inf
+    owner = np.where(solid.any(axis=0), cost.argmin(axis=0), -1)
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9, 9))
     for i, p in enumerate(ids):
         region = (owner == i).astype(np.uint8)
@@ -127,8 +179,8 @@ def main():
 
     run([FFMPEG, '-hide_banner', '-loglevel', 'error', '-y', '-i', os.path.join(SRC, PORTRAIT), '-pix_fmt', 'yuvj444p', '-q:v', '3',
          os.path.join(OUT_MEDIA, 'portrait.jpg')])
-    # Matte: the portrait's plain white background only. The flood fill would leak into the bright
-    # white shirt, so every aligned silhouette (plus a few px) is cut out of it.
+    # Matte: the portrait's plain white background only. The flood fill could leak into white kit
+    # details, so every aligned silhouette (plus a few px) is cut out of it.
     raw = os.path.join(tmp, 'matte.png')
     run(['node', os.path.join(ROOT, 'scripts', 'build-blend-mask.mjs'), '--input', os.path.join(SRC, PORTRAIT),
          '--output', raw, '--seed', 'top,left,right'])

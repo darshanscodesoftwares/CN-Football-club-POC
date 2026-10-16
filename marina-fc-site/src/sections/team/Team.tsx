@@ -2,7 +2,9 @@ import { createTimeline, cubicBezier, stagger, utils } from 'animejs'
 import type { Timeline } from 'animejs'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { CSSProperties, PointerEvent as ReactPointerEvent } from 'react'
+import { CLUB } from '../../club'
 import { prefersReducedMotion } from '../../lib/motion'
+import { usePaperSurface } from '../../lib/paperPattern'
 import { COACHES, TEAM_COPY, TEAM_LAYOUT } from './teamData'
 import type { Coach, CoachId } from './teamData'
 import './Team.css'
@@ -30,7 +32,7 @@ function cardStyle(coach: Coach): CSSProperties {
 }
 
 /**
- * "Our coaches": the client's team portrait with each person's own cutout stacked exactly over
+ * "Our coaches": the team portrait with each person's own cutout stacked exactly over
  * them (aligned by scripts/build-team.py). Hovering a person (tapping on touch screens, focusing
  * with the keyboard) blurs and softens the portrait, lifts that person's cutout forward and opens
  * their card. The portrait's white background meets the page colour through the same masked
@@ -40,6 +42,12 @@ export function Team() {
   const [active, setActive] = useState<CoachId | null>(null)
   const sectionRef = useRef<HTMLElement>(null)
   const stageRef = useRef<HTMLDivElement>(null)
+  const matteRef = useRef<HTMLSpanElement>(null)
+  const veilRef = useRef<HTMLSpanElement>(null)
+  const fadeRef = useRef<HTMLSpanElement>(null)
+  usePaperSurface(matteRef)
+  usePaperSurface(veilRef)
+  usePaperSurface(fadeRef)
   const cardRefs = useRef(new Map<CoachId, HTMLElement>())
   const lastPointer = useRef<string>('mouse')
 
@@ -194,7 +202,7 @@ export function Team() {
           <img
             className="team__portrait"
             src={portrait.src}
-            alt="The Marina FC coaching team: Mohan, founder Masthan Maharaj with a ball, Vijay and Sathish"
+            alt={`The ${CLUB.name} coaching team: ${COACHES.map((coach) => coach.name).join(', ')}`}
             width={portrait.width}
             height={portrait.height}
             loading="lazy"
@@ -202,8 +210,8 @@ export function Team() {
             draggable={false}
           />
           <img className="team__portrait team__portrait--soft" src={portrait.src} alt="" aria-hidden="true" loading="lazy" decoding="async" draggable={false} />
-          <span className="team__matte" aria-hidden="true" style={{ ['--matte' as string]: `url(${portrait.matte})` }} />
-          <span className="team__veil" aria-hidden="true" />
+          <span ref={matteRef} className="team__matte paper-surface" aria-hidden="true" style={{ ['--matte' as string]: `url(${portrait.matte})` }} />
+          <span ref={veilRef} className="team__veil paper-surface" aria-hidden="true" />
 
           {COACHES.map((coach) => {
             const { cutout, place } = people[coach.id]
@@ -219,7 +227,7 @@ export function Team() {
             )
           })}
 
-          <span className="team__fade" aria-hidden="true" />
+          <span ref={fadeRef} className="team__fade paper-surface" aria-hidden="true" />
 
           {COACHES.map((coach) => (
             <button

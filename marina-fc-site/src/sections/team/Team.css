@@ -10,7 +10,6 @@
   --card-w: clamp(300px, 28vw, 440px);
 
   padding: clamp(32px, 4vw, 80px) var(--edge) clamp(56px, 6vw, 120px);
-  background: var(--paper);
   color: var(--ink);
 }
 
@@ -90,7 +89,9 @@
   position: relative;
   width: 100%;
   aspect-ratio: var(--team-ratio);
-  overflow: hidden;
+  /* Clipped on three sides only: a lifted cutout's head may rise above the picture, as the person
+     standing tallest (hair near the top edge) would otherwise lose the top of their head. */
+  clip-path: inset(-12% 0 0 0);
   isolation: isolate;
 }
 
@@ -109,6 +110,8 @@
   filter: blur(14px);
   opacity: 0;
   transform: scale(1.04); /* hides the blur's soft rim at the frame edges */
+  /* ...and, scaled, ends just past the frame edges (1.04 x 96.3% = 100.15%) so no sharp hairline shows */
+  clip-path: inset(1.85%);
   transition: opacity 0.6s var(--ease-out);
 }
 
@@ -116,7 +119,6 @@
 .team__matte {
   position: absolute;
   inset: 0;
-  background: var(--paper);
   mix-blend-mode: darken;
   -webkit-mask: var(--matte) center / 100% 100% no-repeat;
   mask: var(--matte) center / 100% 100% no-repeat;
@@ -126,7 +128,6 @@
 .team__veil {
   position: absolute;
   inset: 0;
-  background: var(--paper);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.6s var(--ease-out);
@@ -173,9 +174,10 @@
 /* The portrait's bottom edge eases into the page. */
 .team__fade {
   position: absolute;
-  inset: auto 0 0;
+  inset: auto 0 -2px; /* past the edge: the frame's clip-path is anti-aliased, so cover its last pixel row */
   height: 16%;
-  background: linear-gradient(to bottom, rgb(250 247 242 / 0), var(--paper));
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000);
+  mask-image: linear-gradient(to bottom, transparent, #000);
   pointer-events: none;
 }
 

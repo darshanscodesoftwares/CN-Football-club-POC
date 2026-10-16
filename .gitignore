@@ -4,6 +4,8 @@
 /clients-currentWebsite(don't_refer_for_design)/
 /website-design(shouldFollowThis)/
 /reactBits/
+# Source photos for the coaches section (scripts/build-team.py reads them)
+/replace-image/
 
 # Installed packages and build output (recreated by npm install / npm run build)
 node_modules/
