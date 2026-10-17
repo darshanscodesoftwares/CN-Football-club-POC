@@ -11,7 +11,8 @@ import type { FrameSet } from './frameSequence'
 import type { CaptionCopyId } from './heroScript'
 import gemini from './videos/gemini.frames.json'
 import geminiNew from './videos/gemini-new.frames.json'
-import googleVis from './videos/google-vis.frames.json'
+// Night-stadium video switched off for now (see the commented entry below); its frames stay on disk.
+// import googleVis from './videos/google-vis.frames.json'
 
 export interface FramesManifest {
   id: string
@@ -108,29 +109,30 @@ export const HERO_VIDEOS: readonly HeroVideo[] = [
       { copy: 'welcome', range: [0.84, 1.12], placement: 'story-left', tone: 'ink' },
     ],
   },
-  {
-    // Photoreal night stadium in Marina's kit (google-vis_HD_V2.mp4, colour-adjusted). Not mirrored, so the crest on the shirt reads correctly.
-    id: 'google-vis',
-    label: 'Google Vis',
-    frames: googleVis,
-    footage: 'dark',
-    focusY: 0.4,
-    timeMap: [
-      [0, 0.35], // floodlights igniting
-      [0.06, 0.5], // nearly still while the opening copy leaves
-      [0.2, 2.0], // lights up over the pitch, then cut to the player with the ball
-      [0.38, 3.967], // player poised, then cut to match play
-      [0.58, 6.433], // match play, then cut to the keeper
-      [0.95, lastFrameTime(googleVis)], // keeper set, the shot, the diving save
-      [1, lastFrameTime(googleVis)],
-    ],
-    captions: [
-      { copy: 'grassroots', range: [0.2, 0.37], placement: 'story-left', top: '45%', tone: 'light' },
-      { copy: 'academy', range: [0.39, 0.57], placement: 'story-center-bottom', tone: 'light' },
-      { copy: 'competitive', range: [0.59, 0.72], placement: 'story-right', top: '45%', tone: 'light' },
-      { copy: 'welcome', range: [0.86, 1.12], placement: 'story-left', top: '34%', tone: 'light' },
-    ],
-  },
+  // Switched off for now: uncomment this entry (and the googleVis import above) to bring it back.
+  // {
+  //   // Photoreal night stadium in Marina's kit (google-vis_HD_V2.mp4, colour-adjusted). Not mirrored, so the crest on the shirt reads correctly.
+  //   id: 'google-vis',
+  //   label: 'Google Vis',
+  //   frames: googleVis,
+  //   footage: 'dark',
+  //   focusY: 0.4,
+  //   timeMap: [
+  //     [0, 0.35], // floodlights igniting
+  //     [0.06, 0.5], // nearly still while the opening copy leaves
+  //     [0.2, 2.0], // lights up over the pitch, then cut to the player with the ball
+  //     [0.38, 3.967], // player poised, then cut to match play
+  //     [0.58, 6.433], // match play, then cut to the keeper
+  //     [0.95, lastFrameTime(googleVis)], // keeper set, the shot, the diving save
+  //     [1, lastFrameTime(googleVis)],
+  //   ],
+  //   captions: [
+  //     { copy: 'grassroots', range: [0.2, 0.37], placement: 'story-left', top: '45%', tone: 'light' },
+  //     { copy: 'academy', range: [0.39, 0.57], placement: 'story-center-bottom', tone: 'light' },
+  //     { copy: 'competitive', range: [0.59, 0.72], placement: 'story-right', top: '45%', tone: 'light' },
+  //     { copy: 'welcome', range: [0.86, 1.12], placement: 'story-left', top: '34%', tone: 'light' },
+  //   ],
+  // },
 ]
 
 /** Index of the video named by `?video=<id>`, or the default (first) video. */
