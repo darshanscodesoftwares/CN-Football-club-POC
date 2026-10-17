@@ -1,6 +1,7 @@
 /**
  * The club this build of the site is for. Change these to re-brand the site for another client;
- * the hero, about, gallery, coaches, footer, crest and cursor ball all read from here.
+ * the hero, about, gallery, coaches, footer and cursor ball all read from here (the logo itself is
+ * components/logoArt.ts).
  * index.html keeps its own <title> and description, so update those too.
  */
 export const CLUB = {
@@ -16,6 +17,4 @@ export const CLUB = {
   /** Where the academy is: the footer's contact card and the gallery's photo captions. */
   city: 'Chennai',
   region: 'Tamil Nadu',
-  /** The two lines of text on the stand-in crest. Keep them short: the oval is narrow. */
-  crest: ['COMMON', '· FC ·'],
 } as const

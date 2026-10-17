@@ -1,12 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 60">
-  <defs><clipPath id="c"><ellipse cx="22" cy="30" rx="19.2" ry="27.2"/></clipPath></defs>
-  <ellipse cx="22" cy="30" rx="20.6" ry="28.6" fill="#fff" stroke="#1b3f91" stroke-width="1.6"/>
-  <g clip-path="url(#c)">
-    <rect width="44" height="60" fill="#eaf1ff"/>
-    <path d="M0 23.5q5.5-3 11 0t11 0 11 0 11 0V31H0Z" fill="#2c5fcf"/>
-    <path d="M0 30.5q5.5-3 11 0t11 0 11 0 11 0V37H0Z" fill="#a9c2f2"/>
-    <path d="M0 36.5q5.5-3 11 0t11 0 11 0 11 0V60H0Z" fill="#1b3f91"/>
-    <circle cx="22" cy="12.4" r="6.2" fill="#fff" stroke="#14254f" stroke-width="1"/>
-    <path d="M22 9.5l2.6 1.9-1 3h-3.2l-1-3Z" fill="#14254f"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 52">
+<polygon points="24.00,2.60 44.26,14.30 44.26,37.70 24.00,49.40 3.74,37.70 3.74,14.30" fill="#0b1f3a" stroke="#0b1f3a" stroke-width="2.4" stroke-linejoin="round"/>
+<polygon points="24.00,6.40 40.97,16.20 40.97,35.80 24.00,45.60 7.03,35.80 7.03,16.20" fill="none" stroke="#c6f02f" stroke-width="1.5" stroke-linejoin="round"/>
+<path d="M24.00 18.80L24.00 10.50M30.85 23.78L38.74 21.21M28.23 31.82L33.11 38.54M19.77 31.82L14.89 38.54M17.15 23.78L9.26 21.21" stroke="#ffffff" stroke-opacity="0.85" stroke-width="1.6" stroke-linecap="round"/>
+<polygon points="24.00,18.80 30.85,23.78 28.23,31.82 19.77,31.82 17.15,23.78" fill="#ffffff" stroke="#ffffff" stroke-width="1" stroke-linejoin="round"/>
 </svg>

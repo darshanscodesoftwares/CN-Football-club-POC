@@ -1,7 +1,7 @@
 /**
  * Paints the cursor ball's surface as an equirectangular map (2:1) for a three.js sphere, in the
  * style of the 2026 World Cup ball the client referenced: white, with red, blue and green swirl
- * panels and maroon/navy pinstripes. The club crest sits on the blue panel where that ball
+ * panels and maroon/navy pinstripes. The club logo sits on the blue panel where that ball
  * carries its tournament emblem, and the club name sits on the green panel. No third-party marks
  * (FIFA, adidas, ball name) are reproduced.
  *
@@ -10,7 +10,7 @@
  * in degrees, with longitude 0 facing the viewer.
  */
 import { CLUB } from '../../club'
-import { CREST_SVG } from './crestArt'
+import { LOGO_HEIGHT, LOGO_URL, LOGO_WIDTH } from '../logoArt'
 
 export const TEX_W = 1024
 export const TEX_H = 512
@@ -271,11 +271,11 @@ function loadImage(src: string) {
   return img.decode().then(() => img)
 }
 
-/** The crest, sized for the blue panel. */
+/** The club logo (components/logoArt.ts), sized to sit inside the blue panel. */
 async function renderCrest() {
-  const h = Math.round(0.34 * TEX_H)
-  const w = Math.round(h * 0.6)
-  const img = await loadImage(`data:image/svg+xml;charset=utf-8,${encodeURIComponent(CREST_SVG)}`)
+  const h = Math.round(0.26 * TEX_H)
+  const w = Math.round((h * LOGO_WIDTH) / LOGO_HEIGHT)
+  const img = await loadImage(LOGO_URL)
   const c = document.createElement('canvas')
   c.width = w
   c.height = h
